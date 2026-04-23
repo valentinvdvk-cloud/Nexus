@@ -1,0 +1,12 @@
+# Fichiers internes Claude / dev
+.claude/
+taches.md
+tache_a_finir.md
+NEXUS_PROJECT.md
+NEXUS_DOCS.md
+scripts/
+update-docs.bat
+
+# OS
+Thumbs.db
+.DS_Store

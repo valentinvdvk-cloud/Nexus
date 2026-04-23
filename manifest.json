@@ -1,0 +1,22 @@
+{
+  "name": "NEXUS — Assistant Personnel",
+  "short_name": "NEXUS",
+  "description": "Ton assistant personnel tout-en-un",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0A0A0F",
+  "theme_color": "#0A0A0F",
+  "lang": "fr",
+  "categories": ["productivity", "lifestyle"],
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Musculation", "url": "/?module=musculation", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] },
+    { "name": "Notes",       "url": "/?module=notes",       "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] },
+    { "name": "Pomodoro",    "url": "/?module=pomodoro",    "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] },
+    { "name": "Finances",    "url": "/?module=finances",    "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] }
+  ]
+}

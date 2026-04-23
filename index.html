@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0"/>
+<meta name="description" content="NEXUS — Ton assistant personnel tout-en-un"/>
+<meta name="theme-color" content="#0A0A0F"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-title" content="NEXUS"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<link rel="apple-touch-icon" href="icon-192.png"/>
+<link rel="manifest" href="manifest.json"/>
+<title>NEXUS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="css/main.css"/>
+<link rel="stylesheet" href="css/components.css"/>
+<link rel="stylesheet" href="css/animations.css"/>
+<link rel="stylesheet" href="css/modules.css"/>
+</head>
+<body>
+
+<!-- ── CUSTOM CURSOR ── -->
+<div id="custom-cursor">
+  <div id="cursor-dot"></div>
+  <div id="cursor-ring"></div>
+</div>
+
+<!-- ── LOADING BAR ── -->
+<div id="loading-bar"></div>
+
+<!-- ── BACKGROUND ORBS ── -->
+<div class="bg-orbs">
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+  <div class="bg-orb orb-3"></div>
+</div>
+
+<!-- ── SIDEBAR OVERLAY (mobile) ── -->
+<div id="sidebar-overlay" class="sidebar-overlay hidden"></div>
+
+<div id="app">
+<div id="app-body">
+
+<!-- ══════════════════════════════════════
+     SIDEBAR
+══════════════════════════════════════ -->
+<aside id="sidebar" class="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-brand">
+      <div class="brand-logo" id="nexus-logo"></div>
+      <span class="brand-name">NEXUS</span>
+    </div>
+    <button id="sidebar-toggle" class="btn-icon sidebar-toggle-btn" data-tip="Réduire (B)">
+      <span id="sidebar-toggle-icon"></span>
+    </button>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section">
+      <span class="nav-section-label">Principal</span>
+      <button class="nav-item active" data-nav="dashboard">
+        <span class="nav-icon" id="nav-icon-dashboard"></span>
+        <span class="nav-label">Dashboard</span>
+      </button>
+      <button class="nav-item" data-nav="musculation">
+        <span class="nav-icon" id="nav-icon-musculation"></span>
+        <span class="nav-label">Musculation</span>
+      </button>
+      <button class="nav-item" data-nav="agenda">
+        <span class="nav-icon" id="nav-icon-agenda"></span>
+        <span class="nav-label">Agenda</span>
+      </button>
+      <button class="nav-item" data-nav="notes">
+        <span class="nav-icon" id="nav-icon-notes"></span>
+        <span class="nav-label">Notes</span>
+      </button>
+      <button class="nav-item" data-nav="stockage">
+        <span class="nav-icon" id="nav-icon-stockage"></span>
+        <span class="nav-label">Stockage</span>
+      </button>
+    </div>
+    <div class="nav-section">
+      <span class="nav-section-label">Santé & Forme</span>
+      <button class="nav-item" data-nav="nutrition">
+        <span class="nav-icon" id="nav-icon-nutrition"></span>
+        <span class="nav-label">Nutrition</span>
+      </button>
+      <button class="nav-item" data-nav="pomodoro">
+        <span class="nav-icon" id="nav-icon-pomodoro"></span>
+        <span class="nav-label">Pomodoro</span>
+      </button>
+    </div>
+    <div class="nav-section">
+      <span class="nav-section-label">Vie & Finances</span>
+      <button class="nav-item" data-nav="finances">
+        <span class="nav-icon" id="nav-icon-finances"></span>
+        <span class="nav-label">Finances</span>
+      </button>
+      <button class="nav-item" data-nav="contacts">
+        <span class="nav-icon" id="nav-icon-contacts"></span>
+        <span class="nav-label">Contacts</span>
+      </button>
+      <button class="nav-item" data-nav="meteo">
+        <span class="nav-icon" id="nav-icon-meteo"></span>
+        <span class="nav-label">Météo</span>
+      </button>
+      <button class="nav-item" data-nav="stats">
+        <span class="nav-icon" id="nav-icon-stats"></span>
+        <span class="nav-label">Statistiques</span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="sidebar-footer">
+    <button class="nav-item" id="settings-btn">
+      <span class="nav-icon" id="nav-icon-settings"></span>
+      <span class="nav-label">Paramètres</span>
+    </button>
+    <button class="nav-item" id="about-btn">
+      <span class="nav-icon" id="nav-icon-about"></span>
+      <span class="nav-label">À propos</span>
+    </button>
+  </div>
+</aside>
+
+<!-- ══════════════════════════════════════
+     MAIN
+══════════════════════════════════════ -->
+<main class="main-content" id="main-content">
+
+  <!-- TOPBAR -->
+  <header class="topbar" id="topbar">
+    <div class="topbar-left">
+      <button id="mobile-menu-btn" class="btn-icon mobile-only">
+        <span id="topbar-menu-icon"></span>
+      </button>
+      <h1 class="page-title desktop-only" id="page-title">Dashboard</h1>
+    </div>
+
+    <!-- Brand centré (visible toujours, surtout mobile) -->
+    <div class="topbar-brand" aria-hidden="true">
+      <div class="topbar-brand-name">✦ NEXUS</div>
+      <div class="topbar-brand-module" id="topbar-module-label">Dashboard</div>
+    </div>
+    <div class="topbar-right">
+      <!-- Statut Firebase -->
+      <div class="firebase-status" id="firebase-status" title="Statut sync">
+        <div class="status-dot connecting" id="status-dot"></div>
+        <div class="status-info">
+          <span class="status-label" id="status-label">Connexion...</span>
+          <span class="status-sync" id="status-sync">—</span>
+        </div>
+        <div class="status-dropdown" id="status-dropdown">
+          <div class="status-dropdown-header"><strong>Statut Firebase</strong></div>
+          <div class="status-row"><span>Connexion</span><span id="sd-connection">—</span></div>
+          <div class="status-row"><span>Dernière sync</span><span id="sd-lastsync">—</span></div>
+          <div class="status-row"><span>En attente</span><span id="sd-pending">0</span></div>
+          <div class="status-row"><span>Compte</span><span id="sd-user">—</span></div>
+          <div class="status-actions">
+            <button id="btn-force-sync" class="btn btn-outline btn-sm">🔄 Synchroniser</button>
+            <button id="btn-signout" class="btn btn-danger btn-sm">🚪 Déconnexion</button>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-icon btn-mobile-mode" id="mobile-mode-btn" data-tip="Mode mobile">
+        <span id="topbar-mobile-icon"></span>
+      </button>
+      <button class="btn-icon" id="search-btn" data-tip="Recherche (Ctrl+K)">
+        <span id="topbar-search-icon"></span>
+      </button>
+      <button class="btn-icon" id="theme-toggle" data-tip="Changer le thème">
+        <span id="topbar-theme-icon"></span>
+      </button>
+      <div class="notif-wrap">
+        <button class="btn-icon" id="notif-btn" data-tip="Notifications">
+          <span id="topbar-notif-icon"></span>
+          <span id="notif-badge" class="notif-badge" style="display:none">0</span>
+        </button>
+        <div id="notif-dropdown" class="notif-dropdown hidden">
+          <div class="notif-header">
+            <span>Notifications</span>
+            <button onclick="Notifications.markAllRead();renderNotifDropdown()" class="btn-text-sm">Tout lire</button>
+          </div>
+          <div id="notif-list" class="notif-list"></div>
+        </div>
+      </div>
+
+      <!-- Annonces -->
+      <div class="annonces-wrap">
+        <button class="btn-icon" id="annonces-btn" data-tip="Nouveautés">
+          <span style="font-size:16px">📣</span>
+          <span id="annonces-badge" class="annonces-badge" style="display:none">0</span>
+        </button>
+      </div>
+
+      <!-- Avatar / User Menu -->
+      <div class="avatar-wrap" id="avatar-wrap">
+        <button class="avatar-btn" id="avatar-btn" data-tip="Mon compte">
+          <img id="avatar-img" class="avatar-img hidden" src="" alt="avatar"/>
+          <span id="avatar-initials" class="avatar-initials">V</span>
+        </button>
+        <div class="avatar-dropdown hidden" id="avatar-dropdown">
+          <div class="avatar-dd-header">
+            <div class="avatar-dd-pic">
+              <img id="avatar-dd-img" class="hidden" src="" alt=""/>
+              <span id="avatar-dd-initials">V</span>
+            </div>
+            <div class="avatar-dd-info">
+              <div class="avatar-dd-name" id="avatar-dd-name">Valentin</div>
+              <div class="avatar-dd-email" id="avatar-dd-email">—</div>
+            </div>
+          </div>
+          <div class="avatar-dd-sep"></div>
+          <button class="avatar-dd-item" id="avatar-dd-profile">
+            <span>👤</span><span>Mon profil</span>
+          </button>
+          <button class="avatar-dd-item" id="avatar-dd-sync">
+            <span>🔄</span><span>Synchroniser</span>
+          </button>
+          <button class="avatar-dd-item" id="avatar-dd-export">
+            <span>📤</span><span>Exporter les données</span>
+          </button>
+          <label class="avatar-dd-item" for="avatar-import-file">
+            <span>📥</span><span>Importer les données</span>
+          </label>
+          <input type="file" id="avatar-import-file" accept=".json" class="hidden"/>
+          <div class="avatar-dd-sep"></div>
+          <div class="avatar-dd-theme-row">
+            <span>🎨</span><span>Thème</span>
+            <div class="avatar-dd-theme-chips">
+              <button data-dd-theme="dark"   class="dd-theme-chip active">Sombre</button>
+              <button data-dd-theme="light"  class="dd-theme-chip">Clair</button>
+              <button data-dd-theme="purple" class="dd-theme-chip">Violet</button>
+            </div>
+          </div>
+          <div class="avatar-dd-sep"></div>
+          <button class="avatar-dd-item danger" id="avatar-dd-signout">
+            <span>🚪</span><span>Déconnexion</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ══ PROFILE MODAL ══ -->
+  <div class="modal hidden" id="profile-modal">
+    <div class="modal-overlay" onclick="Modal.close('profile-modal')"></div>
+    <div class="modal-box profile-modal-box">
+      <div class="modal-header">
+        <h3>Mon profil</h3>
+        <button class="btn-icon" onclick="Modal.close('profile-modal')">✕</button>
+      </div>
+      <div class="modal-body">
+
+        <!-- Avatar Section -->
+        <div class="profile-avatar-section">
+          <div class="profile-avatar-pic" id="profile-avatar-pic">
+            <img id="profile-avatar-preview" class="hidden" src="" alt="avatar"/>
+            <span id="profile-avatar-letter">V</span>
+          </div>
+          <label class="btn btn-outline btn-sm profile-avatar-upload-btn" for="profile-avatar-input">
+            📷 Changer la photo
+          </label>
+          <input type="file" id="profile-avatar-input" accept="image/*" class="hidden"/>
+          <button class="btn btn-ghost btn-sm" id="btn-remove-avatar" style="display:none">Supprimer</button>
+        </div>
+
+        <!-- Identity -->
+        <div class="profile-section-title">Identité</div>
+        <div class="form-group">
+          <label class="form-label">Nom d'affichage</label>
+          <input type="text" class="form-input" id="profile-display-name" placeholder="Ton prénom"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-input" id="profile-email-display" disabled placeholder="—"/>
+        </div>
+
+        <!-- Body -->
+        <div class="profile-section-title">Données corporelles</div>
+        <div class="profile-grid-2">
+          <div class="form-group">
+            <label class="form-label">Âge</label>
+            <input type="number" class="form-input" id="profile-age" placeholder="25" min="10" max="120"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Poids (kg)</label>
+            <input type="number" class="form-input" id="profile-weight" placeholder="70" min="30" max="300" step="0.1"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Taille (cm)</label>
+            <input type="number" class="form-input" id="profile-height" placeholder="175" min="100" max="250"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Sexe</label>
+            <select class="form-input" id="profile-gender">
+              <option value="m">Homme</option>
+              <option value="f">Femme</option>
+            </select>
+          </div>
+        </div>
+
+        <button class="btn btn-primary w-full" id="btn-save-profile">💾 Enregistrer le profil</button>
+
+        <!-- Security -->
+        <div class="profile-section-title" style="margin-top:24px">Sécurité</div>
+        <button class="btn btn-outline w-full" id="btn-change-password">
+          🔑 Envoyer un lien de réinitialisation du mot de passe
+        </button>
+
+        <!-- Danger zone -->
+        <div class="profile-section-title danger-title" style="margin-top:24px">Zone dangereuse</div>
+        <button class="btn btn-danger w-full" id="btn-delete-account">
+          🗑️ Supprimer mon compte
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ CONTENT AREA ══ -->
+  <div class="content-area" id="content-area">
+
+    <!-- ══════════ DASHBOARD ══════════ -->
+    <div class="module-pane" data-module="dashboard">
+      <div class="greeting-hero anim-fade-up">
+        <div class="greeting-text">
+          <h2 id="dash-greeting" class="greeting-title">Bonjour, Valentin 👋</h2>
+          <p id="dash-date" class="greeting-date"></p>
+        </div>
+        <div class="greeting-actions">
+          <button class="btn btn-primary btn-sm" onclick="Modal.open('quick-add-modal')">
+            <span id="dash-add-icon"></span> Ajouter
+          </button>
+        </div>
+      </div>
+
+      <!-- Daily quote -->
+      <div class="quote-card anim-fade-up stagger-1" id="dash-quote-card">
+        <span class="quote-icon">✦</span>
+        <p class="quote-text" id="dash-quote-text"></p>
+        <span class="quote-author" id="dash-quote-author"></span>
+      </div>
+
+      <!-- Quick stats -->
+      <div class="stats-grid anim-fade-up stagger-2">
+        <div class="stat-card widget hover-lift">
+          <div class="stat-icon stat-icon-purple" id="stat-icon-ev"></div>
+          <div class="stat-info">
+            <span class="stat-value" id="stat-events-today">0</span>
+            <span class="stat-label">Événements today</span>
+          </div>
+        </div>
+        <div class="stat-card widget hover-lift">
+          <div class="stat-icon stat-icon-cyan" id="stat-icon-task"></div>
+          <div class="stat-info">
+            <span class="stat-value" id="stat-tasks-today">0</span>
+            <span class="stat-label">Tâches en cours</span>
+          </div>
+        </div>
+        <div class="stat-card widget hover-lift">
+          <div class="stat-icon stat-icon-green" id="stat-icon-workout"></div>
+          <div class="stat-info">
+            <span class="stat-value stat-sm" id="stat-last-workout">—</span>
+            <span class="stat-label">Dernier sport</span>
+          </div>
+        </div>
+        <div class="stat-card widget hover-lift">
+          <div class="stat-icon stat-icon-orange" id="stat-icon-notes"></div>
+          <div class="stat-info">
+            <span class="stat-value" id="stat-notes-count">0</span>
+            <span class="stat-label">Notes</span>
+          </div>
+        </div>
+        <div class="stat-card widget hover-lift">
+          <div class="stat-icon stat-icon-purple" id="stat-icon-balance"></div>
+          <div class="stat-info">
+            <span class="stat-value stat-sm" id="stat-balance">0 €</span>
+            <span class="stat-label">Solde finances</span>
+          </div>
+        </div>
+        <div class="stat-card widget hover-lift">
+          <div class="stat-icon stat-icon-red" id="stat-icon-streak"></div>
+          <div class="stat-info">
+            <span class="stat-value" id="stat-streak">0🔥</span>
+            <span class="stat-label">Streak muscu</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick actions -->
+      <div class="section-header anim-fade-up stagger-3">
+        <h3 class="section-title">Actions rapides</h3>
+      </div>
+      <div class="quick-actions anim-fade-up stagger-4">
+        <button class="quick-action-btn" onclick="Router.navigate('musculation')">
+          <span id="qa-icon-muscu"></span><span>Séance</span>
+        </button>
+        <button class="quick-action-btn" onclick="Router.navigate('notes')">
+          <span id="qa-icon-notes"></span><span>Note</span>
+        </button>
+        <button class="quick-action-btn" onclick="Router.navigate('agenda')">
+          <span id="qa-icon-agenda"></span><span>Événement</span>
+        </button>
+        <button class="quick-action-btn" onclick="Router.navigate('finances')">
+          <span id="qa-icon-finances"></span><span>Dépense</span>
+        </button>
+        <button class="quick-action-btn" onclick="Router.navigate('nutrition')">
+          <span id="qa-icon-nutrition"></span><span>Repas</span>
+        </button>
+        <button class="quick-action-btn" onclick="Router.navigate('pomodoro')">
+          <span id="qa-icon-pomodoro"></span><span>Pomodoro</span>
+        </button>
+      </div>
+
+      <!-- Recent activity -->
+      <div class="section-header anim-fade-up stagger-5">
+        <h3 class="section-title">Activité récente</h3>
+      </div>
+      <div id="recent-activity" class="recent-activity anim-fade-up stagger-6"></div>
+    </div>
+
+    <!-- ══════════ MUSCULATION ══════════ -->
+    <div class="module-pane hidden" data-module="musculation">
+      <div id="muscu-container"></div>
+    </div>
+
+    <!-- ══════════ STOCKAGE ══════════ -->
+    <div class="module-pane hidden" data-module="stockage">
+      <div id="stockage-container"></div>
+    </div>
+
+    <!-- ══════════ AGENDA ══════════ -->
+    <div class="module-pane hidden" data-module="agenda">
+      <div id="agenda-container"></div>
+    </div>
+
+    <!-- ══════════ NUTRITION ══════════ -->
+    <div class="module-pane hidden" data-module="nutrition">
+      <div id="nutrition-container"></div>
+    </div>
+
+    <!-- ══════════ FINANCES ══════════ -->
+    <div class="module-pane hidden" data-module="finances">
+      <div id="finances-container"></div>
+    </div>
+
+    <!-- ══════════ NOTES ══════════ -->
+    <div class="module-pane hidden" data-module="notes">
+      <div id="notes-container"></div>
+    </div>
+
+    <!-- ══════════ POMODORO ══════════ -->
+    <div class="module-pane hidden" data-module="pomodoro">
+      <div id="pomodoro-container"></div>
+    </div>
+
+    <!-- ══════════ MÉTÉO ══════════ -->
+    <div class="module-pane hidden" data-module="meteo">
+      <div id="meteo-container"></div>
+    </div>
+
+    <!-- ══════════ CONTACTS ══════════ -->
+    <div class="module-pane hidden" data-module="contacts">
+      <div id="contacts-container"></div>
+    </div>
+
+    <!-- ══════════ STATS ══════════ -->
+    <div class="module-pane hidden" data-module="stats">
+      <div id="stats-container"></div>
+    </div>
+
+  </div><!-- /content-area -->
+</main>
+
+</div><!-- /#app-body -->
+
+<!-- ══ MOBILE BOTTOM NAV ══ -->
+<nav class="mobile-nav" id="mobile-nav">
+  <button class="mobile-nav-item active" data-nav="dashboard">
+    <span id="mnav-icon-dashboard"></span><span>Home</span>
+  </button>
+  <button class="mobile-nav-item" data-nav="musculation">
+    <span id="mnav-icon-musculation"></span><span>Sport</span>
+  </button>
+  <button class="mobile-nav-item" data-nav="agenda">
+    <span id="mnav-icon-agenda"></span><span>Agenda</span>
+  </button>
+  <button class="mobile-nav-item" data-nav="notes">
+    <span id="mnav-icon-notes"></span><span>Notes</span>
+  </button>
+  <button class="mobile-nav-item" data-nav="finances">
+    <span id="mnav-icon-finances"></span><span>Budget</span>
+  </button>
+</nav>
+
+</div><!-- /#app -->
+
+<!-- ══ TOAST CONTAINER ══ -->
+<div id="toast-container" class="toast-container"></div>
+
+<!-- ══ POMODORO MINI PLAYER ══ -->
+<div id="pomodoro-mini" class="hidden">
+  <svg viewBox="0 0 40 40" width="40" height="40">
+    <circle cx="20" cy="20" r="16" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="3"/>
+    <circle id="mini-pom-ring" cx="20" cy="20" r="16" fill="none" stroke="var(--accent-purple)" stroke-width="3"
+      stroke-dasharray="100.53" stroke-dashoffset="0" stroke-linecap="round" transform="rotate(-90 20 20)"/>
+  </svg>
+  <span id="mini-pom-time" class="mini-pom-time">25:00</span>
+  <button id="mini-pom-toggle" class="btn-icon-sm"></button>
+</div>
+
+<!-- ══════════════════════════════════════
+     MODALS
+══════════════════════════════════════ -->
+
+<!-- SEARCH -->
+<div id="search-modal" class="search-overlay hidden">
+  <div class="search-box anim-scale-in">
+    <div class="search-bar">
+      <span id="search-icon-el"></span>
+      <input id="search-input" type="text" placeholder="Rechercher dans NEXUS…" autocomplete="off" data-focus/>
+      <kbd class="kbd">ESC</kbd>
+    </div>
+    <div id="search-results" class="search-results"></div>
+    <div class="search-footer">
+      <span><kbd class="kbd">↑↓</kbd> naviguer</span>
+      <span><kbd class="kbd">↵</kbd> sélectionner</span>
+      <span><kbd class="kbd">Ctrl+K</kbd> ouvrir</span>
+    </div>
+  </div>
+</div>
+
+<!-- SETTINGS -->
+<div id="settings-modal" class="modal hidden">
+  <div class="modal-box modal-md anim-scale-in">
+    <div class="modal-header">
+      <h3 class="modal-title">Paramètres</h3>
+      <button class="btn-icon" data-close-modal="settings-modal"><span id="settings-close-icon"></span></button>
+    </div>
+    <div class="modal-body">
+      <div class="settings-section">
+        <h4 class="settings-section-title">Profil</h4>
+        <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="form-group" style="margin-bottom:0">
+            <label class="form-label">Prénom</label>
+            <input id="setting-username" type="text" class="form-input" placeholder="Ton prénom"/>
+          </div>
+          <div class="form-group" style="margin-bottom:0">
+            <label class="form-label">Email</label>
+            <input id="setting-email" type="email" class="form-input" placeholder="email@exemple.com"/>
+          </div>
+        </div>
+        <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-top:10px">
+          <div class="form-group" style="margin-bottom:0">
+            <label class="form-label">Âge</label>
+            <input id="setting-age" type="number" class="form-input form-input-sm" placeholder="25" min="10" max="100"/>
+          </div>
+          <div class="form-group" style="margin-bottom:0">
+            <label class="form-label">Poids (kg)</label>
+            <input id="setting-weight" type="number" class="form-input form-input-sm" placeholder="70" min="30" max="250"/>
+          </div>
+          <div class="form-group" style="margin-bottom:0">
+            <label class="form-label">Taille (cm)</label>
+            <input id="setting-height" type="number" class="form-input form-input-sm" placeholder="175" min="100" max="250"/>
+          </div>
+          <div class="form-group" style="margin-bottom:0">
+            <label class="form-label">Sexe</label>
+            <select id="setting-gender" class="form-select form-input-sm">
+              <option value="m">Homme</option>
+              <option value="f">Femme</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="settings-section">
+        <h4 class="settings-section-title">Apparence</h4>
+        <div class="theme-chip-grid">
+          <button class="theme-chip active" data-set-theme="dark">🌙 Sombre</button>
+          <button class="theme-chip" data-set-theme="light">☀️ Clair</button>
+          <button class="theme-chip" data-set-theme="amoled">⚫ AMOLED</button>
+          <button class="theme-chip" data-set-theme="dark-blue">🔵 Bleu</button>
+          <button class="theme-chip" data-set-theme="dark-purple">🟣 Violet</button>
+        </div>
+      </div>
+      <div class="settings-section">
+        <h4 class="settings-section-title">Interface</h4>
+        <label class="toggle-row">
+          <span>Curseur personnalisé</span>
+          <input id="setting-cursor" type="checkbox" class="toggle" checked/>
+        </label>
+        <div style="margin-top:8px">
+          <button class="btn btn-outline btn-sm" onclick="Shortcuts.showModal()">⌨️ Voir les raccourcis (?)</button>
+        </div>
+      </div>
+      <div class="settings-section">
+        <h4 class="settings-section-title">Données</h4>
+        <div class="settings-actions">
+          <button id="btn-export" class="btn btn-outline btn-sm">
+            <span id="set-export-icon"></span> Exporter
+          </button>
+          <button id="btn-import" class="btn btn-outline btn-sm">
+            <span id="set-import-icon"></span> Importer
+          </button>
+          <input id="import-file" type="file" accept=".json" style="display:none"/>
+          <button id="btn-reset" class="btn btn-danger btn-sm">
+            <span id="set-reset-icon"></span> Réinitialiser
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT / CREDITS -->
+<div id="about-modal" class="modal hidden">
+  <div class="modal-box modal-sm anim-scale-in">
+    <div class="modal-header">
+      <h3 class="modal-title">À propos</h3>
+      <button class="btn-icon" data-close-modal="about-modal"><span id="about-close-icon"></span></button>
+    </div>
+    <div class="modal-body about-body">
+      <div class="about-logo-wrap">
+        <div class="about-logo" id="about-logo-el"></div>
+        <h2 class="about-app-name">NEXUS</h2>
+        <p class="about-tagline">Ton assistant personnel tout-en-un</p>
+        <span class="about-version badge badge-purple">v1.0.0</span>
+      </div>
+      <div class="credits-card">
+        <div class="credits-avatar">V</div>
+        <div class="credits-info">
+          <p class="credits-name">Valentin Vdvk</p>
+          <p class="credits-role">Créateur &amp; Designer</p>
+          <a href="mailto:valentin.vdvk@gmail.com" class="credits-email">valentin.vdvk@gmail.com</a>
+        </div>
+      </div>
+      <div class="about-features">
+        <div class="about-feature"><span>🚀</span> 11 modules intégrés</div>
+        <div class="about-feature"><span>🔒</span> 100% local, zéro cloud</div>
+        <div class="about-feature"><span>⚡</span> Vanilla JS, zéro dépendance</div>
+        <div class="about-feature"><span>🎨</span> Design premium dark</div>
+      </div>
+      <p class="about-built">Construit avec passion pour la productivité quotidienne.</p>
+    </div>
+  </div>
+</div>
+
+<!-- QUICK ADD -->
+<div id="quick-add-modal" class="modal hidden">
+  <div class="modal-box modal-sm anim-scale-in">
+    <div class="modal-header">
+      <h3 class="modal-title">Ajouter rapidement</h3>
+      <button class="btn-icon" data-close-modal="quick-add-modal"><span id="qa-close-icon"></span></button>
+    </div>
+    <div class="modal-body">
+      <div class="quick-add-grid">
+        <button class="quick-add-option" onclick="Modal.close('quick-add-modal');Router.navigate('musculation')">
+          <span class="qa-opt-icon" id="qa-opt-muscu"></span>
+          <span>Séance sport</span>
+        </button>
+        <button class="quick-add-option" onclick="Modal.close('quick-add-modal');Router.navigate('notes')">
+          <span class="qa-opt-icon" id="qa-opt-note"></span>
+          <span>Nouvelle note</span>
+        </button>
+        <button class="quick-add-option" onclick="Modal.close('quick-add-modal');Router.navigate('agenda')">
+          <span class="qa-opt-icon" id="qa-opt-event"></span>
+          <span>Événement</span>
+        </button>
+        <button class="quick-add-option" onclick="Modal.close('quick-add-modal');Router.navigate('finances')">
+          <span class="qa-opt-icon" id="qa-opt-fin"></span>
+          <span>Transaction</span>
+        </button>
+        <button class="quick-add-option" onclick="Modal.close('quick-add-modal');Router.navigate('nutrition')">
+          <span class="qa-opt-icon" id="qa-opt-nutr"></span>
+          <span>Repas</span>
+        </button>
+        <button class="quick-add-option" onclick="Modal.close('quick-add-modal');Router.navigate('contacts')">
+          <span class="qa-opt-icon" id="qa-opt-contact"></span>
+          <span>Contact</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ONBOARDING -->
+<div id="onboarding-overlay" class="highlight-overlay hidden">
+  <div class="highlight-box"></div>
+  <div class="tooltip-bubble">
+    <h4 class="step-title"></h4>
+    <p class="step-text"></p>
+    <div class="step-footer">
+      <span class="step-counter">1 / 5</span>
+      <div class="step-btns">
+        <button onclick="Onboarding.skip()" class="btn btn-ghost btn-sm">Passer</button>
+        <button id="onboarding-next" class="btn btn-primary btn-sm">Suivant</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     FIREBASE (doit être PREMIER)
+══════════════════════════════════════ -->
+<script type="module">
+  import { initializeApp }
+    from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
+  import {
+    getAuth,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    signOut,
+    onAuthStateChanged,
+    updateProfile,
+    sendEmailVerification,
+    sendPasswordResetEmail,
+    setPersistence,
+    browserLocalPersistence
+  } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
+  import {
+    getFirestore,
+    collection, doc, setDoc, getDoc, getDocs,
+    addDoc, updateDoc, deleteDoc, onSnapshot,
+    query, orderBy, where, serverTimestamp,
+    enableIndexedDbPersistence
+  } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+
+  const firebaseConfig = {
+    apiKey:            "REMPLACE_PAR_TA_CLE",
+    authDomain:        "REMPLACE_PAR_TON_DOMAIN",
+    projectId:         "REMPLACE_PAR_TON_PROJECT_ID",
+    storageBucket:     "REMPLACE_PAR_TON_BUCKET",
+    messagingSenderId: "REMPLACE_PAR_TON_SENDER_ID",
+    appId:             "REMPLACE_PAR_TON_APP_ID"
+  };
+
+  try {
+    const app  = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db   = getFirestore(app);
+
+    enableIndexedDbPersistence(db).catch(() => {});
+    setPersistence(auth, browserLocalPersistence).catch(() => {});
+
+    window.firebaseApp  = app;
+    window.firebaseAuth = auth;
+    window.firebaseDb   = db;
+    window.fbFunctions  = {
+      createUserWithEmailAndPassword, signInWithEmailAndPassword,
+      signOut, onAuthStateChanged, updateProfile,
+      sendEmailVerification, sendPasswordResetEmail,
+      collection, doc, setDoc, getDoc, getDocs,
+      addDoc, updateDoc, deleteDoc, onSnapshot,
+      query, orderBy, where, serverTimestamp,
+    };
+    window._firebaseReady = true;
+  } catch(e) {
+    console.warn('[NEXUS] Firebase non configuré — mode local activé', e.message);
+    window._firebaseReady = false;
+  }
+  window.dispatchEvent(new Event('firebase-ready'));
+</script>
+
+<!-- ══════════════════════════════════════
+     BOTTOM NAV (mobile ≤768px)
+══════════════════════════════════════ -->
+<nav class="bottom-nav" id="bottomNav" aria-label="Navigation principale">
+  <button class="bottom-nav-item active" data-module="dashboard">
+    <span class="bottom-nav-icon" id="bnav-icon-dashboard"></span>
+    <span class="bottom-nav-label">Accueil</span>
+  </button>
+  <button class="bottom-nav-item" data-module="musculation">
+    <span class="bottom-nav-icon" id="bnav-icon-musculation"></span>
+    <span class="bottom-nav-label">Sport</span>
+  </button>
+  <button class="bottom-nav-item" data-module="agenda">
+    <span class="bottom-nav-icon" id="bnav-icon-agenda"></span>
+    <span class="bottom-nav-label">Agenda</span>
+  </button>
+  <button class="bottom-nav-item" data-module="finances">
+    <span class="bottom-nav-icon" id="bnav-icon-finances"></span>
+    <span class="bottom-nav-label">Finances</span>
+  </button>
+  <button class="bottom-nav-item" data-module="__more__">
+    <span class="bottom-nav-icon" style="font-size:18px;font-weight:700">···</span>
+    <span class="bottom-nav-label">Plus</span>
+  </button>
+</nav>
+
+<!-- DRAWER "Plus" (mobile) -->
+<div class="more-drawer" id="moreDrawer" aria-hidden="true">
+  <div class="more-drawer-handle"></div>
+  <div class="more-drawer-grid">
+    <button class="more-drawer-item" data-module="notes">
+      <span id="drawer-icon-notes"></span><span>Notes</span>
+    </button>
+    <button class="more-drawer-item" data-module="nutrition">
+      <span id="drawer-icon-nutrition"></span><span>Nutrition</span>
+    </button>
+    <button class="more-drawer-item" data-module="contacts">
+      <span id="drawer-icon-contacts"></span><span>Contacts</span>
+    </button>
+    <button class="more-drawer-item" data-module="pomodoro">
+      <span id="drawer-icon-pomodoro"></span><span>Pomodoro</span>
+    </button>
+    <button class="more-drawer-item" data-module="meteo">
+      <span id="drawer-icon-meteo"></span><span>Météo</span>
+    </button>
+    <button class="more-drawer-item" data-module="stockage">
+      <span id="drawer-icon-stockage"></span><span>Stockage</span>
+    </button>
+    <button class="more-drawer-item" data-module="stats">
+      <span id="drawer-icon-stats"></span><span>Stats</span>
+    </button>
+    <button class="more-drawer-item" id="drawer-transfert-btn">
+      <span style="font-size:24px">📦</span><span>Transfert</span>
+    </button>
+  </div>
+</div>
+<div class="drawer-overlay" id="drawerOverlay"></div>
+
+<!-- ══════════════════════════════════════
+     SCRIPTS
+══════════════════════════════════════ -->
+<script src="js/icons.js"></script>
+<script src="js/security.js"></script>
+<script src="js/app.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/sync.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/musculation.js"></script>
+<script src="js/agenda.js"></script>
+<script src="js/stockage.js"></script>
+<script src="js/nutrition.js"></script>
+<script src="js/finances.js"></script>
+<script src="js/notes.js"></script>
+<script src="js/pomodoro.js"></script>
+<script src="js/meteo.js"></script>
+<script src="js/contacts.js"></script>
+<script src="js/stats.js"></script>
+<script src="js/assistant.js"></script>
+<script src="js/annonces.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const navIconMap = {
+    'nav-icon-dashboard': 'dashboard', 'nav-icon-musculation': 'musculation',
+    'nav-icon-agenda': 'agenda', 'nav-icon-notes': 'notes', 'nav-icon-stockage': 'stockage',
+    'nav-icon-nutrition': 'nutrition', 'nav-icon-pomodoro': 'pomodoro',
+    'nav-icon-finances': 'finances', 'nav-icon-contacts': 'contacts',
+    'nav-icon-meteo': 'meteo', 'nav-icon-stats': 'stats',
+    'nav-icon-settings': 'settings', 'nav-icon-about': 'info',
+    'topbar-menu-icon': 'menu', 'topbar-search-icon': 'search',
+    'topbar-theme-icon': 'moon', 'topbar-notif-icon': 'bell',
+    'dash-add-icon': 'plus',
+    'stat-icon-ev': 'calendar', 'stat-icon-task': 'check', 'stat-icon-workout': 'dumbbell',
+    'stat-icon-notes': 'notes', 'stat-icon-balance': 'wallet', 'stat-icon-streak': 'flame',
+    'qa-icon-muscu': 'musculation', 'qa-icon-notes': 'notes', 'qa-icon-agenda': 'agenda',
+    'qa-icon-finances': 'finances', 'qa-icon-nutrition': 'nutrition', 'qa-icon-pomodoro': 'pomodoro',
+    'mnav-icon-dashboard': 'dashboard', 'mnav-icon-musculation': 'musculation',
+    'mnav-icon-agenda': 'agenda', 'mnav-icon-notes': 'notes', 'mnav-icon-finances': 'finances',
+    'settings-close-icon': 'close', 'about-close-icon': 'close', 'qa-close-icon': 'close',
+    'search-icon-el': 'search',
+    'set-export-icon': 'download', 'set-import-icon': 'upload', 'set-reset-icon': 'trash',
+    'qa-opt-muscu': 'musculation', 'qa-opt-note': 'notes', 'qa-opt-event': 'agenda',
+    'qa-opt-fin': 'finances', 'qa-opt-nutr': 'nutrition', 'qa-opt-contact': 'contacts',
+    'nexus-logo': 'nexusLogo', 'about-logo-el': 'nexusLogo',
+    'sidebar-toggle-icon': 'chevronLeft',
+    'topbar-mobile-icon': 'smartphone',
+    // Bottom nav icons
+    'bnav-icon-dashboard': 'dashboard', 'bnav-icon-musculation': 'musculation',
+    'bnav-icon-agenda': 'agenda', 'bnav-icon-finances': 'finances',
+    // Drawer icons
+    'drawer-icon-notes': 'notes', 'drawer-icon-nutrition': 'nutrition',
+    'drawer-icon-contacts': 'contacts', 'drawer-icon-pomodoro': 'pomodoro',
+    'drawer-icon-meteo': 'meteo', 'drawer-icon-stockage': 'stockage',
+    'drawer-icon-stats': 'stats',
+  };
+  Object.entries(navIconMap).forEach(([id, icon]) => {
+    const el = document.getElementById(id);
+    if (el && Icons[icon]) el.innerHTML = Icons[icon];
+  });
+  Bus.on('sidebarToggled', collapsed => {
+    const el = document.getElementById('sidebar-toggle-icon');
+    if (el) el.innerHTML = Icons[collapsed ? 'chevronRight' : 'chevronLeft'];
+  });
+
+  /* Mobile mode toggle — phone mockup */
+  (function initPhoneMode() {
+    /* Inject chrome elements once */
+    const mock = document.createElement('div'); mock.id = 'phone-mock';
+    document.body.appendChild(mock);
+    const leftBtns = document.createElement('div'); leftBtns.className = 'phone-btn-left';
+    leftBtns.innerHTML = '<div class="phone-btn-silent"></div><div class="phone-btn-vol-up"></div><div class="phone-btn-vol-down"></div>';
+    document.body.appendChild(leftBtns);
+    const rightBtns = document.createElement('div'); rightBtns.className = 'phone-btn-right';
+    rightBtns.innerHTML = '<div class="phone-btn-power"></div>';
+    document.body.appendChild(rightBtns);
+
+    /* Status bar (inside #app) */
+    const statusBar = document.createElement('div'); statusBar.id = 'phone-status-bar';
+    statusBar.innerHTML = `
+      <span class="psb-time" id="psb-time">9:41</span>
+      <div class="psb-icons">
+        <svg class="psb-signal" width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="4" y="5" width="3" height="7" rx="1"/><rect x="8" y="3" width="3" height="9" rx="1"/><rect x="12" y="0" width="3" height="12" rx="1" opacity=".3"/></svg>
+        <svg class="psb-wifi" width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><path d="M8 10a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z"/><path d="M3.5 7C5 5.5 6.4 4.8 8 4.8s3 .7 4.5 2.2l1.2-1.2A8.2 8.2 0 0 0 8 3.2a8.2 8.2 0 0 0-5.7 2.6L3.5 7z" opacity=".6"/><path d="M1 4.3A11.5 11.5 0 0 1 8 1.5a11.5 11.5 0 0 1 7 2.8L13.8 3A13 13 0 0 0 8 0 13 13 0 0 0 2.2 3L1 4.3z" opacity=".3"/></svg>
+        <svg class="psb-battery" width="25" height="12" viewBox="0 0 25 12" fill="currentColor"><rect x="0" y="1" width="21" height="10" rx="3" stroke="currentColor" stroke-width="1.2" fill="none"/><rect x="1.5" y="2.5" width="15" height="7" rx="2"/><path d="M22 4v4a2 2 0 0 0 0-4z"/></svg>
+      </div>`;
+    const appEl = document.getElementById('app');
+    if (appEl) appEl.insertBefore(statusBar, appEl.firstChild);
+
+    /* Update clock */
+    function updateClock() {
+      const el = document.getElementById('psb-time');
+      if (!el) return;
+      const now = new Date();
+      el.textContent = now.getHours() + ':' + String(now.getMinutes()).padStart(2, '0');
+    }
+    setInterval(updateClock, 10000);
+    updateClock();
+
+    const btn = document.getElementById('mobile-mode-btn');
+    if (!btn) return;
+    const isMobile = () => document.body.classList.contains('force-mobile');
+    btn.addEventListener('click', () => {
+      document.body.classList.toggle('force-mobile');
+      btn.classList.toggle('active', isMobile());
+      const icon = document.getElementById('topbar-mobile-icon');
+      if (icon) icon.innerHTML = isMobile() ? Icons.monitor : Icons.smartphone;
+      btn.setAttribute('data-tip', isMobile() ? 'Mode bureau' : 'Mode mobile');
+      Toast.info(isMobile() ? '📱 Mode iPhone activé' : '🖥️ Mode bureau restauré');
+    });
+  })();
+
+  /* Init assistant */
+  if (typeof Assistant !== 'undefined') Assistant.init();
+
+  /* Init annonces */
+  if (typeof Annonces !== 'undefined') Annonces.init();
+
+  /* ── Bottom Nav ── */
+  document.getElementById('bottomNav')?.addEventListener('click', e => {
+    const btn = e.target.closest('.bottom-nav-item');
+    if (!btn) return;
+    const mod = btn.dataset.module;
+    if (mod === '__more__') {
+      openMoreDrawer();
+    } else if (mod) {
+      Router.navigate(mod);
+      updateBottomNav(mod);
+    }
+  });
+
+  /* ── Drawer overlay ── */
+  document.getElementById('drawerOverlay')?.addEventListener('click', closeMoreDrawer);
+  document.getElementById('moreDrawer')?.addEventListener('click', e => {
+    const item = e.target.closest('.more-drawer-item');
+    if (!item) return;
+    if (item.id === 'drawer-transfert-btn') {
+      closeMoreDrawer();
+      setTimeout(() => Transfert.open(), 200);
+      return;
+    }
+    if (!item.dataset.module) return;
+    Router.navigate(item.dataset.module);
+    updateBottomNav(item.dataset.module);
+    closeMoreDrawer();
+  });
+});
+
+/* ── Bottom nav helpers (global) ── */
+function updateBottomNav(activeModule) {
+  document.querySelectorAll('.bottom-nav-item').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.module === activeModule);
+  });
+  const label = {
+    dashboard:'Dashboard', musculation:'Sport', agenda:'Agenda', finances:'Finances',
+    nutrition:'Nutrition', notes:'Notes', contacts:'Contacts', pomodoro:'Pomodoro',
+    meteo:'Météo', stockage:'Stockage', stats:'Stats',
+  }[activeModule] || activeModule;
+  const el = document.getElementById('topbar-module-label');
+  if (el) el.textContent = label;
+}
+
+function openMoreDrawer() {
+  const drawer  = document.getElementById('moreDrawer');
+  const overlay = document.getElementById('drawerOverlay');
+  drawer?.classList.add('open');
+  drawer?.setAttribute('aria-hidden', 'false');
+  overlay?.classList.add('active');
+}
+
+function closeMoreDrawer() {
+  const drawer  = document.getElementById('moreDrawer');
+  const overlay = document.getElementById('drawerOverlay');
+  drawer?.classList.remove('open');
+  drawer?.setAttribute('aria-hidden', 'true');
+  overlay?.classList.remove('active');
+}
+</script>
+
+</body>
+</html>

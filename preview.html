@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyLife — Aperçu iPhone</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 40%, #0f3460 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 40px 20px 60px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    h1 {
+      color: white;
+      font-size: 1.6rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+      letter-spacing: -0.5px;
+    }
+    .subtitle {
+      color: rgba(255,255,255,0.5);
+      font-size: 0.88rem;
+      margin-bottom: 40px;
+    }
+
+    /* ---- TABS ---- */
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 36px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .tab {
+      padding: 8px 18px;
+      border-radius: 20px;
+      border: none;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.7);
+      transition: all .2s;
+    }
+    .tab.active {
+      background: #6366f1;
+      color: white;
+      box-shadow: 0 4px 16px rgba(99,102,241,0.5);
+    }
+
+    /* ---- iPHONE FRAME ---- */
+    .phone-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .iphone {
+      width: 320px;
+      height: 660px;
+      background: #1a1a1a;
+      border-radius: 50px;
+      padding: 14px;
+      box-shadow:
+        0 0 0 1px #333,
+        0 0 0 3px #111,
+        0 30px 80px rgba(0,0,0,0.7),
+        inset 0 0 0 1px rgba(255,255,255,0.05);
+      position: relative;
+    }
+
+    /* Side buttons */
+    .iphone::before {
+      content: '';
+      position: absolute;
+      left: -4px;
+      top: 100px;
+      width: 4px;
+      height: 32px;
+      background: #333;
+      border-radius: 2px 0 0 2px;
+      box-shadow: 0 46px 0 #333, 0 80px 0 #333;
+    }
+    .iphone::after {
+      content: '';
+      position: absolute;
+      right: -4px;
+      top: 140px;
+      width: 4px;
+      height: 60px;
+      background: #333;
+      border-radius: 0 2px 2px 0;
+    }
+
+    .iphone-screen {
+      width: 100%;
+      height: 100%;
+      background: white;
+      border-radius: 38px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Dynamic island */
+    .dynamic-island {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 28px;
+      background: #1a1a1a;
+      border-radius: 20px;
+      z-index: 100;
+    }
+
+    /* Screen content — rendered HTML */
+    .screen-content {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    /* ---- STATIC SCREENS ---- */
+    .mock-screen {
+      width: 100%;
+      height: 100%;
+      background: #f8fafc;
+      position: relative;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    /* Header */
+    .m-header {
+      height: 56px;
+      background: white;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      padding-top: 36px;
+    }
+    .m-header-title { font-size: 1rem; font-weight: 800; color: #6366f1; }
+    .m-header-btn {
+      width: 34px; height: 34px;
+      background: #e0e7ff;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+      color: #6366f1;
+      font-weight: 700;
+    }
+
+    /* Content area */
+    .m-content {
+      position: absolute;
+      top: 56px;
+      bottom: 60px;
+      left: 0; right: 0;
+      overflow: hidden;
+      padding: 12px;
+      background: #f8fafc;
+    }
+
+    /* Bottom nav */
+    .m-nav {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 60px;
+      background: white;
+      border-top: 1px solid #e2e8f0;
+      display: flex;
+    }
+    .m-nav-item {
+      flex: 1;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 2px;
+      font-size: 0.6rem;
+      font-weight: 600;
+      color: #94a3b8;
+    }
+    .m-nav-item.active { color: #6366f1; }
+    .m-nav-item .ni { font-size: 1.2rem; }
+
+    /* CARDS */
+    .m-card {
+      background: white;
+      border-radius: 14px;
+      padding: 12px;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    }
+
+    /* ========= AGENDA SCREEN ========= */
+    .cal { }
+    .cal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .cal-head span { font-size: 0.85rem; font-weight: 700; }
+    .cal-head button { background: none; border: none; color: #6366f1; font-size: 1.1rem; cursor: pointer; }
+    .cal-days-hdr { display: grid; grid-template-columns: repeat(7,1fr); margin-bottom: 4px; }
+    .cal-days-hdr span { text-align: center; font-size: 0.6rem; font-weight: 700; color: #94a3b8; }
+    .cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 1px; }
+    .cd {
+      aspect-ratio: 1;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      font-size: 0.72rem;
+      border-radius: 8px;
+      cursor: pointer;
+      position: relative;
+    }
+    .cd.today { background: #6366f1; color: white; font-weight: 700; }
+    .cd.has-ev::after { content: ''; position: absolute; bottom: 3px; width: 4px; height: 4px; border-radius: 50%; background: #22c55e; }
+    .cd.today.has-ev::after { background: white; }
+    .cd.dim { opacity: .3; }
+    .ev-list { margin-top: 10px; }
+    .ev-day-title { font-size: 0.72rem; font-weight: 700; color: #64748b; margin-bottom: 6px; text-transform: uppercase; letter-spacing: .5px; }
+    .ev-item { display: flex; align-items: center; gap: 8px; padding: 8px; background: white; border-radius: 10px; margin-bottom: 6px; box-shadow: 0 1px 4px rgba(0,0,0,.06); border-left: 3px solid #6366f1; }
+    .ev-item.blue { border-left-color: #3b82f6; }
+    .ev-item.green { border-left-color: #22c55e; }
+    .ev-item.orange { border-left-color: #f59e0b; }
+    .ev-time { font-size: 0.65rem; font-weight: 700; color: #94a3b8; }
+    .ev-title { font-size: 0.78rem; font-weight: 600; }
+
+    /* ========= PLANNING SCREEN ========= */
+    .day-block { background: white; border-radius: 12px; margin-bottom: 8px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.07); }
+    .day-block-hdr { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; }
+    .day-block-hdr.today-hdr { background: #6366f1; color: white; }
+    .day-block-title { font-size: 0.82rem; font-weight: 700; }
+    .day-block-count { font-size: 0.68rem; background: rgba(0,0,0,.12); padding: 2px 8px; border-radius: 10px; }
+    .task-line { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-top: 1px solid #f1f5f9; }
+    .task-cb { width: 18px; height: 18px; border-radius: 5px; border: 2px solid #e2e8f0; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: .65rem; }
+    .task-cb.done { background: #22c55e; border-color: #22c55e; color: white; }
+    .task-label { font-size: 0.78rem; flex: 1; }
+    .task-label.strike { text-decoration: line-through; opacity: .5; }
+    .prio-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
+    /* ========= NOTES SCREEN ========= */
+    .notes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .nc { background: white; border-radius: 12px; padding: 10px; box-shadow: 0 1px 4px rgba(0,0,0,.07); border-top: 3px solid #6366f1; min-height: 90px; }
+    .nc.work { border-top-color: #3b82f6; }
+    .nc.ideas { border-top-color: #f59e0b; }
+    .nc.other { border-top-color: #94a3b8; }
+    .nc-title { font-size: 0.78rem; font-weight: 700; margin-bottom: 4px; }
+    .nc-body { font-size: 0.68rem; color: #64748b; line-height: 1.4; }
+    .nc-date { font-size: 0.6rem; color: #94a3b8; margin-top: 6px; }
+    .search-mock { display: flex; align-items: center; background: white; border-radius: 10px; padding: 7px 10px; margin-bottom: 10px; font-size: 0.75rem; color: #94a3b8; gap: 6px; box-shadow: 0 1px 4px rgba(0,0,0,.07); }
+
+    /* ========= SPORT SCREEN ========= */
+    .stats-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 10px; }
+    .stat { background: white; border-radius: 12px; padding: 10px 6px; text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,.07); }
+    .stat-val { font-size: 1.4rem; font-weight: 800; color: #6366f1; line-height: 1; }
+    .stat-lbl { font-size: 0.6rem; color: #94a3b8; margin-top: 2px; font-weight: 600; }
+    .sp-item { display: flex; align-items: center; gap: 10px; background: white; border-radius: 12px; padding: 10px; margin-bottom: 8px; box-shadow: 0 1px 4px rgba(0,0,0,.07); }
+    .sp-ico { width: 40px; height: 40px; background: #e0e7ff; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+    .sp-type { font-size: 0.82rem; font-weight: 700; }
+    .sp-meta { font-size: 0.68rem; color: #94a3b8; margin-top: 2px; }
+    .sp-date { font-size: 0.65rem; font-weight: 600; color: #94a3b8; margin-left: auto; }
+
+    /* ========= DOCS SCREEN ========= */
+    .folders { display: flex; gap: 6px; margin-bottom: 10px; overflow: hidden; }
+    .folder-chip { padding: 5px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; border: 1.5px solid #e2e8f0; background: white; color: #64748b; flex-shrink: 0; }
+    .folder-chip.active { background: #6366f1; color: white; border-color: #6366f1; }
+    .upload-box { border: 2px dashed #e2e8f0; border-radius: 12px; padding: 16px; text-align: center; margin-bottom: 10px; color: #94a3b8; font-size: 0.75rem; }
+    .upload-box .ui { font-size: 1.8rem; margin-bottom: 4px; }
+    .doc-row { display: flex; align-items: center; gap: 10px; background: white; border-radius: 12px; padding: 10px; margin-bottom: 8px; box-shadow: 0 1px 4px rgba(0,0,0,.07); }
+    .doc-ico { font-size: 1.6rem; flex-shrink: 0; }
+    .doc-name { font-size: 0.78rem; font-weight: 600; }
+    .doc-size { font-size: 0.65rem; color: #94a3b8; margin-top: 2px; }
+    .doc-dl { margin-left: auto; font-size: 1rem; color: #6366f1; }
+
+    /* ---- LABEL ---- */
+    .screen-label {
+      position: absolute;
+      bottom: -32px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255,255,255,0.6);
+      font-size: 0.78rem;
+      white-space: nowrap;
+    }
+
+    /* ---- FEATURES LIST ---- */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+      max-width: 700px;
+      margin-top: 60px;
+    }
+    .feat {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      padding: 16px;
+      color: white;
+    }
+    .feat-icon { font-size: 1.6rem; margin-bottom: 8px; }
+    .feat-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; }
+    .feat-desc { font-size: 0.78rem; color: rgba(255,255,255,0.55); line-height: 1.5; }
+  </style>
+</head>
+<body>
+
+  <h1>✦ MyLife</h1>
+  <p class="subtitle">Aperçu des 5 sections de l'application</p>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="show('agenda',this)">📅 Agenda</button>
+    <button class="tab" onclick="show('planning',this)">📋 Planning</button>
+    <button class="tab" onclick="show('notes',this)">📝 Notes</button>
+    <button class="tab" onclick="show('sport',this)">💪 Sport</button>
+    <button class="tab" onclick="show('docs',this)">📁 Documents</button>
+  </div>
+
+  <!-- iPHONE -->
+  <div class="phone-wrap">
+    <div class="iphone">
+      <div class="iphone-screen">
+        <div class="dynamic-island"></div>
+
+        <!-- ===== AGENDA ===== -->
+        <div class="mock-screen" id="s-agenda">
+          <div class="m-header" style="padding-top:44px">
+            <span class="m-header-title">Agenda</span>
+            <div class="m-header-btn">＋</div>
+          </div>
+          <div class="m-content">
+            <div class="m-card cal">
+              <div class="cal-head">
+                <button>‹</button>
+                <span>Avril 2026</span>
+                <button>›</button>
+              </div>
+              <div class="cal-days-hdr">
+                <span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span>
+              </div>
+              <div class="cal-grid">
+                <div class="cd dim">30</div>
+                <div class="cd dim">31</div>
+                <div class="cd">1</div>
+                <div class="cd">2</div>
+                <div class="cd">3</div>
+                <div class="cd">4</div>
+                <div class="cd">5</div>
+                <div class="cd">6</div>
+                <div class="cd has-ev">7</div>
+                <div class="cd">8</div>
+                <div class="cd has-ev">9</div>
+                <div class="cd">10</div>
+                <div class="cd">11</div>
+                <div class="cd">12</div>
+                <div class="cd">13</div>
+                <div class="cd">14</div>
+                <div class="cd has-ev">15</div>
+                <div class="cd">16</div>
+                <div class="cd">17</div>
+                <div class="cd">18</div>
+                <div class="cd today has-ev">19</div>
+                <div class="cd">20</div>
+                <div class="cd">21</div>
+                <div class="cd">22</div>
+                <div class="cd has-ev">23</div>
+                <div class="cd">24</div>
+                <div class="cd">25</div>
+                <div class="cd">26</div>
+                <div class="cd">27</div>
+                <div class="cd">28</div>
+                <div class="cd">29</div>
+                <div class="cd">30</div>
+              </div>
+            </div>
+            <div class="ev-list">
+              <div class="ev-day-title">Aujourd'hui — Samedi 19 Avril</div>
+              <div class="ev-item">
+                <div class="ev-time">09:00</div>
+                <div><div class="ev-title">Médecin généraliste</div></div>
+              </div>
+              <div class="ev-item blue">
+                <div class="ev-time">14:30</div>
+                <div><div class="ev-title">Réunion équipe</div></div>
+              </div>
+              <div class="ev-item green">
+                <div class="ev-time">19:00</div>
+                <div><div class="ev-title">Dîner avec famille</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="m-nav">
+            <div class="m-nav-item active"><span class="ni">📅</span>Agenda</div>
+            <div class="m-nav-item"><span class="ni">📋</span>Planning</div>
+            <div class="m-nav-item"><span class="ni">📝</span>Notes</div>
+            <div class="m-nav-item"><span class="ni">💪</span>Sport</div>
+            <div class="m-nav-item"><span class="ni">📁</span>Docs</div>
+          </div>
+        </div>
+
+        <!-- ===== PLANNING ===== -->
+        <div class="mock-screen" id="s-planning" style="display:none">
+          <div class="m-header" style="padding-top:44px">
+            <span class="m-header-title">Planning</span>
+            <div class="m-header-btn">＋</div>
+          </div>
+          <div class="m-content">
+            <div class="day-block">
+              <div class="day-block-hdr today-hdr">
+                <span class="day-block-title">Samedi 19 Avril</span>
+                <span class="day-block-count">2/3</span>
+              </div>
+              <div class="task-line">
+                <div class="task-cb done">✓</div>
+                <span class="task-label strike">Faire les courses</span>
+                <span class="prio-dot" style="background:#22c55e"></span>
+              </div>
+              <div class="task-line">
+                <div class="task-cb done">✓</div>
+                <span class="task-label strike">Appeler la banque</span>
+                <span class="prio-dot" style="background:#f59e0b"></span>
+              </div>
+              <div class="task-line">
+                <div class="task-cb"></div>
+                <span class="task-label">Préparer présentation</span>
+                <span class="prio-dot" style="background:#ef4444"></span>
+              </div>
+            </div>
+            <div class="day-block">
+              <div class="day-block-hdr">
+                <span class="day-block-title">Dimanche 20 Avril</span>
+                <span class="day-block-count" style="background:rgba(0,0,0,.07)">0/2</span>
+              </div>
+              <div class="task-line">
+                <div class="task-cb"></div>
+                <span class="task-label">Sport — salle</span>
+                <span class="prio-dot" style="background:#22c55e"></span>
+              </div>
+              <div class="task-line">
+                <div class="task-cb"></div>
+                <span class="task-label">Lire 30 min</span>
+                <span class="prio-dot" style="background:#22c55e"></span>
+              </div>
+            </div>
+            <div class="day-block">
+              <div class="day-block-hdr">
+                <span class="day-block-title">Lundi 21 Avril</span>
+                <span class="day-block-count" style="background:rgba(0,0,0,.07)">0/1</span>
+              </div>
+              <div class="task-line">
+                <div class="task-cb"></div>
+                <span class="task-label">Réunion projet Alpha</span>
+                <span class="prio-dot" style="background:#ef4444"></span>
+              </div>
+            </div>
+          </div>
+          <div class="m-nav">
+            <div class="m-nav-item"><span class="ni">📅</span>Agenda</div>
+            <div class="m-nav-item active"><span class="ni">📋</span>Planning</div>
+            <div class="m-nav-item"><span class="ni">📝</span>Notes</div>
+            <div class="m-nav-item"><span class="ni">💪</span>Sport</div>
+            <div class="m-nav-item"><span class="ni">📁</span>Docs</div>
+          </div>
+        </div>
+
+        <!-- ===== NOTES ===== -->
+        <div class="mock-screen" id="s-notes" style="display:none">
+          <div class="m-header" style="padding-top:44px">
+            <span class="m-header-title">Notes</span>
+            <div class="m-header-btn">＋</div>
+          </div>
+          <div class="m-content">
+            <div class="search-mock">🔍 Rechercher...</div>
+            <div style="display:flex;gap:6px;margin-bottom:10px;overflow:hidden">
+              <div style="padding:4px 12px;border-radius:20px;background:#6366f1;color:white;font-size:.65rem;font-weight:700;flex-shrink:0">Toutes</div>
+              <div style="padding:4px 12px;border-radius:20px;background:#ede9fe;color:#7c3aed;font-size:.65rem;font-weight:700;flex-shrink:0">Personnel</div>
+              <div style="padding:4px 12px;border-radius:20px;background:#dbeafe;color:#2563eb;font-size:.65rem;font-weight:700;flex-shrink:0">Travail</div>
+              <div style="padding:4px 12px;border-radius:20px;background:#fef3c7;color:#d97706;font-size:.65rem;font-weight:700;flex-shrink:0">Idées</div>
+            </div>
+            <div class="notes-grid">
+              <div class="nc">
+                <div class="nc-title">Recette risotto</div>
+                <div class="nc-body">Faire revenir l'oignon dans du beurre, ajouter le riz arborio...</div>
+                <div class="nc-date">15 avr.</div>
+              </div>
+              <div class="nc work">
+                <div class="nc-title">Réunion notes</div>
+                <div class="nc-body">Points à aborder: budget Q2, roadmap produit, recrutement...</div>
+                <div class="nc-date">18 avr.</div>
+              </div>
+              <div class="nc ideas">
+                <div class="nc-title">Idée app</div>
+                <div class="nc-body">Créer un tracker d'habitudes avec gamification et streak...</div>
+                <div class="nc-date">19 avr.</div>
+              </div>
+              <div class="nc">
+                <div class="nc-title">Liste cadeaux</div>
+                <div class="nc-body">Papa: livre photo, Maman: cours de cuisine...</div>
+                <div class="nc-date">12 avr.</div>
+              </div>
+            </div>
+          </div>
+          <div class="m-nav">
+            <div class="m-nav-item"><span class="ni">📅</span>Agenda</div>
+            <div class="m-nav-item"><span class="ni">📋</span>Planning</div>
+            <div class="m-nav-item active"><span class="ni">📝</span>Notes</div>
+            <div class="m-nav-item"><span class="ni">💪</span>Sport</div>
+            <div class="m-nav-item"><span class="ni">📁</span>Docs</div>
+          </div>
+        </div>
+
+        <!-- ===== SPORT ===== -->
+        <div class="mock-screen" id="s-sport" style="display:none">
+          <div class="m-header" style="padding-top:44px">
+            <span class="m-header-title">Sport</span>
+            <div class="m-header-btn">＋</div>
+          </div>
+          <div class="m-content">
+            <div class="stats-row">
+              <div class="stat"><div class="stat-val">5</div><div class="stat-lbl">🔥 Série</div></div>
+              <div class="stat"><div class="stat-val">3</div><div class="stat-lbl">📅 Semaine</div></div>
+              <div class="stat"><div class="stat-val">24</div><div class="stat-lbl">🏆 Total</div></div>
+            </div>
+            <div class="sp-item">
+              <div class="sp-ico">🏋️</div>
+              <div>
+                <div class="sp-type">Salle de sport</div>
+                <div class="sp-meta">⏱ 65 min · 🔥 420 kcal</div>
+                <div class="sp-meta" style="font-style:italic;margin-top:2px">"Jambes + cardio, super séance"</div>
+              </div>
+              <div class="sp-date">Aujourd'hui</div>
+            </div>
+            <div class="sp-item">
+              <div class="sp-ico">🏃</div>
+              <div>
+                <div class="sp-type">Course à pied</div>
+                <div class="sp-meta">⏱ 45 min · 📍 8.2 km · 🔥 380 kcal</div>
+              </div>
+              <div class="sp-date">17 avr.</div>
+            </div>
+            <div class="sp-item">
+              <div class="sp-ico">🚴</div>
+              <div>
+                <div class="sp-type">Vélo</div>
+                <div class="sp-meta">⏱ 90 min · 📍 32 km</div>
+              </div>
+              <div class="sp-date">16 avr.</div>
+            </div>
+            <div class="sp-item">
+              <div class="sp-ico">🏋️</div>
+              <div>
+                <div class="sp-type">Salle de sport</div>
+                <div class="sp-meta">⏱ 55 min · 🔥 350 kcal</div>
+              </div>
+              <div class="sp-date">15 avr.</div>
+            </div>
+          </div>
+          <div class="m-nav">
+            <div class="m-nav-item"><span class="ni">📅</span>Agenda</div>
+            <div class="m-nav-item"><span class="ni">📋</span>Planning</div>
+            <div class="m-nav-item"><span class="ni">📝</span>Notes</div>
+            <div class="m-nav-item active"><span class="ni">💪</span>Sport</div>
+            <div class="m-nav-item"><span class="ni">📁</span>Docs</div>
+          </div>
+        </div>
+
+        <!-- ===== DOCUMENTS ===== -->
+        <div class="mock-screen" id="s-docs" style="display:none">
+          <div class="m-header" style="padding-top:44px">
+            <span class="m-header-title">Documents</span>
+            <div class="m-header-btn">＋</div>
+          </div>
+          <div class="m-content">
+            <div class="folders">
+              <div class="folder-chip active">📁 Tous</div>
+              <div class="folder-chip">📂 Travail</div>
+              <div class="folder-chip">📂 Santé</div>
+              <div class="folder-chip">📂 Photos</div>
+            </div>
+            <div class="upload-box">
+              <div class="ui">☁️</div>
+              <div>Cliquer ou déposer un fichier</div>
+            </div>
+            <div class="doc-row">
+              <div class="doc-ico">📕</div>
+              <div>
+                <div class="doc-name">Contrat_travail.pdf</div>
+                <div class="doc-size">2.4 Mo · 12 jan. · 📂 Travail</div>
+              </div>
+              <div class="doc-dl">⬇️</div>
+            </div>
+            <div class="doc-row">
+              <div class="doc-ico">🖼️</div>
+              <div>
+                <div class="doc-name">Ordonnance_avril.jpg</div>
+                <div class="doc-size">540 Ko · 5 avr. · 📂 Santé</div>
+              </div>
+              <div class="doc-dl">⬇️</div>
+            </div>
+            <div class="doc-row">
+              <div class="doc-ico">📘</div>
+              <div>
+                <div class="doc-name">Budget_2026.xlsx</div>
+                <div class="doc-size">128 Ko · 1 avr. · 📂 Travail</div>
+              </div>
+              <div class="doc-dl">⬇️</div>
+            </div>
+            <div class="doc-row">
+              <div class="doc-ico">🖼️</div>
+              <div>
+                <div class="doc-name">Vacances_été.png</div>
+                <div class="doc-size">3.1 Mo · 19 avr. · 📂 Photos</div>
+              </div>
+              <div class="doc-dl">⬇️</div>
+            </div>
+          </div>
+          <div class="m-nav">
+            <div class="m-nav-item"><span class="ni">📅</span>Agenda</div>
+            <div class="m-nav-item"><span class="ni">📋</span>Planning</div>
+            <div class="m-nav-item"><span class="ni">📝</span>Notes</div>
+            <div class="m-nav-item"><span class="ni">💪</span>Sport</div>
+            <div class="m-nav-item active"><span class="ni">📁</span>Docs</div>
+          </div>
+        </div>
+
+      </div><!-- /iphone-screen -->
+    </div><!-- /iphone -->
+    <div class="screen-label" id="screen-label">Section : Agenda</div>
+  </div><!-- /phone-wrap -->
+
+  <!-- FEATURES -->
+  <div class="features">
+    <div class="feat">
+      <div class="feat-icon">📅</div>
+      <div class="feat-title">Agenda</div>
+      <div class="feat-desc">Calendrier mensuel. Clique sur un jour pour voir et ajouter des événements avec couleurs.</div>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">📋</div>
+      <div class="feat-title">Planning</div>
+      <div class="feat-desc">Vue semaine. Tâches par jour avec priorité haute / moyenne / basse, à cocher.</div>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">📝</div>
+      <div class="feat-title">Notes</div>
+      <div class="feat-desc">Cartes par catégorie : Personnel, Travail, Idées. Recherche instantanée.</div>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">💪</div>
+      <div class="feat-title">Sport</div>
+      <div class="feat-desc">Suivi des séances avec streak, stats hebdo, exercices détaillés (séries/reps/poids).</div>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">📁</div>
+      <div class="feat-title">Documents</div>
+      <div class="feat-desc">Stockage local de fichiers. Dossiers personnalisés, téléchargement, glisser-déposer.</div>
+    </div>
+  </div>
+
+  <script>
+    const labels = { agenda:'Agenda', planning:'Planning', notes:'Notes', sport:'Sport', docs:'Documents' };
+    function show(id, btn) {
+      document.querySelectorAll('.mock-screen').forEach(s => s.style.display = 'none');
+      document.getElementById('s-' + id).style.display = 'block';
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('screen-label').textContent = 'Section : ' + labels[id];
+    }
+  </script>
+
+</body>
+</html>
