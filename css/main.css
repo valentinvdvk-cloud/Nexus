@@ -95,6 +95,11 @@
   --topbar-h:        60px;
   --content-max:     1400px;
   --mobile-nav-h:    64px;
+
+  /* Surface (alias vers bg vars — utilisé dans panels, nav, modals) */
+  --surface:         #111118;
+  --surface-hover:   #1A1A25;
+  --primary:         #7C3AED;
 }
 
 /* Light theme override */
@@ -115,6 +120,27 @@
   --border:        rgba(0,0,0,0.08);
   --border-hover:  rgba(0,0,0,0.15);
   --shadow-card:   0 4px 24px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.8);
+  --surface:         #FFFFFF;
+  --surface-hover:   #F0F0F5;
+  --primary:         #7C3AED;
+}
+
+/* AMOLED — surface noire */
+[data-theme="amoled"] {
+  --surface: #050508;
+  --surface-hover: #0A0A0F;
+}
+
+/* Dark Blue — surface bleue profonde */
+[data-theme="dark-blue"] {
+  --surface: #0D1426;
+  --surface-hover: #111D35;
+}
+
+/* Dark Purple — surface violette profonde */
+[data-theme="dark-purple"] {
+  --surface: #130A1F;
+  --surface-hover: #1A0F2E;
 }
 
 /* AMOLED theme */
@@ -494,6 +520,8 @@ h1, h2, h3, h4, h5, h6 { line-height: 1.2; font-weight: 700; }
 
 @media (max-width: 767px) {
   .mobile-only { display: flex; }
+  /* Masque le bouton admin sur mobile — accessible via le drawer */
+  #admin-trigger-btn { display: none; }
 }
 
 .tb-btn {

@@ -1385,7 +1385,6 @@ input[type="checkbox"], input[type="radio"] { min-height: auto; }
 @media (max-width: 768px) {
   .topbar-brand-module { display: block; }
   .topbar-brand-name { font-size: 18px; letter-spacing: 2px; }
-  .topbar { position: relative; }
 }
 
 /* ═══════════════════════════════════════════════════════════
