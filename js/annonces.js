@@ -12,21 +12,10 @@ const Annonces = {
       date: '2026-04-24',
       label: 'Aujourd\'hui',
       emoji: '🌐',
-      title: 'NEXUS accessible partout',
+      title: 'NEXUS sur ton téléphone',
       items: [
-        'Disponible depuis n\'importe quel appareil via URL',
-        'Installable sur iPhone & Android',
-      ],
-    },
-    {
-      version: '2.3',
-      date: '2026-04-22',
-      label: '22 avril',
-      emoji: '📦',
-      title: 'Export & import de données',
-      items: [
-        'Sauvegarde toutes tes données en un fichier .nexus',
-        'Import avec mode fusion — rien n\'est écrasé',
+        'Accessible depuis n\'importe quel appareil',
+        'Installable sur l\'écran d\'accueil iPhone & Android',
       ],
     },
     {
@@ -34,10 +23,10 @@ const Annonces = {
       date: '2026-04-22',
       label: '22 avril',
       emoji: '📱',
-      title: 'Navigation mobile',
+      title: 'Navigation mobile repensée',
       items: [
-        'Barre de navigation en bas sur mobile',
-        'Accès rapide à tous les modules depuis le menu ···',
+        'Barre de navigation en bas pour un accès rapide',
+        'Tous les modules accessibles en un geste',
       ],
     },
     {
@@ -45,10 +34,10 @@ const Annonces = {
       date: '2026-04-22',
       label: '22 avril',
       emoji: '🤖',
-      title: 'Assistant en langage naturel',
+      title: 'Assistant vocal',
       items: [
-        'Crée des séances, notes, événements et dépenses par la voix',
-        'Fonctionne 100% hors-ligne, sans clé API',
+        'Parle à NEXUS pour créer séances, notes, événements…',
+        'Fonctionne sans connexion internet',
       ],
     },
     {
@@ -58,8 +47,8 @@ const Annonces = {
       emoji: '🚀',
       title: 'Lancement de NEXUS',
       items: [
-        '11 modules tout-en-un — sport, agenda, finances, notes et plus',
-        '5 thèmes, mode hors-ligne, PWA installable',
+        '11 modules : sport, agenda, finances, notes et plus',
+        '5 thèmes au choix',
       ],
     },
   ],
