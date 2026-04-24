@@ -8,9 +8,24 @@ const Annonces = {
   /* ── Changelog — ajouter en TÊTE à chaque session ── */
   CHANGELOG: [
     {
+      version: '2.4',
+      date: '2026-04-24',
+      label: 'Aujourd\'hui',
+      emoji: '🔒',
+      title: 'Verrouillage PIN & Panel Admin',
+      items: [
+        'Écran de verrouillage PIN à 4 chiffres au lancement',
+        'Setup guidé au premier démarrage — prénom + PIN + code admin',
+        'Code administrateur séparé — ouvre le panel admin directement',
+        'Panel admin — stats de l\'appareil (séances, notes, événements…)',
+        'Session déverrouillée jusqu\'à fermeture de l\'onglet',
+        'Déploiement GitHub Pages — app accessible partout via URL',
+      ],
+    },
+    {
       version: '2.3',
       date: '2026-04-22',
-      label: 'Aujourd\'hui',
+      label: '2026-04-22',
       emoji: '📦',
       title: 'Transfert de données & corrections mobile',
       items: [

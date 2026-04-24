@@ -26,6 +26,7 @@ const FILES = [
   'js/stats.js',
   'js/assistant.js',
   'js/annonces.js',
+  'js/lock.js',
 ];
 
 self.addEventListener('install', e => {
