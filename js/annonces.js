@@ -8,9 +8,24 @@ const Annonces = {
   /* ── Changelog — ajouter en TÊTE à chaque session ── */
   CHANGELOG: [
     {
-      version: '2.4',
+      version: '2.5',
       date: '2026-04-24',
       label: 'Aujourd\'hui',
+      emoji: '🛡️',
+      title: 'Sécurité renforcée & code d\'accès partagé',
+      items: [
+        'Code d\'accès unique partagé — même code pour tous les utilisateurs',
+        'Code administrateur séparé — accès au panel admin pour l\'admin uniquement',
+        'Anti-brute force — verrouillage après 5 tentatives (durée exponentielle)',
+        'Countdown de déverrouillage visible en temps réel',
+        'Panel admin — statistiques, état de sécurité, gestion des codes',
+        'Réinitialisation des tentatives échouées depuis le panel admin',
+      ],
+    },
+    {
+      version: '2.4',
+      date: '2026-04-24',
+      label: '2026-04-24',
       emoji: '🔒',
       title: 'Verrouillage PIN & Panel Admin',
       items: [
