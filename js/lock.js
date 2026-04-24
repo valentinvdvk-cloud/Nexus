@@ -47,6 +47,9 @@ const Lock = {
     localStorage.removeItem(this._K.locked);
   },
 
+  /* Container selon le mode */
+  _root() { return (document.body.classList.contains('force-mobile') && document.getElementById('app')) || document.body; },
+
   /* ── Log d'accès ── */
   async _logAccess() {
     let ip = '?';
@@ -92,7 +95,7 @@ const Lock = {
           id="admin-code-submit" ${locked ? 'disabled' : ''}>Accéder au panel →</button>
       </div>`;
 
-    document.body.appendChild(m);
+    this._root().appendChild(m);
     requestAnimationFrame(() => m.classList.add('open'));
 
     if (locked) this._startCountdown('admin-code-inp', 'admin-code-submit');
@@ -259,7 +262,7 @@ const Lock = {
         </button>
       </div>`;
 
-    document.body.appendChild(p);
+    this._root().appendChild(p);
     requestAnimationFrame(() => p.classList.add('open'));
 
     document.getElementById('admin-close')?.addEventListener('click', () => {

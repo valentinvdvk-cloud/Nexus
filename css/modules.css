@@ -1888,3 +1888,14 @@ body.force-mobile .notes-list-panel { border-right: none; }
 /* Assistant caché en mode phone (interface déjà pleine) */
 body.force-mobile .assistant-fab,
 body.force-mobile .assistant-panel { display: none !important; }
+
+/* Topbar force-mobile : masque les boutons non essentiels */
+body.force-mobile #firebase-status,
+body.force-mobile #search-btn,
+body.force-mobile #theme-toggle,
+body.force-mobile #admin-trigger-btn { display: none !important; }
+
+/* Panels dans le mockup : position fixed relative à #app (transform crée un nouveau stacking context) */
+body.force-mobile .annonces-panel,
+body.force-mobile .admin-panel { height: 100% !important; max-width: 100% !important; }
+body.force-mobile .admin-code-modal { position: fixed !important; }

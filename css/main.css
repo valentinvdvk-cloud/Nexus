@@ -518,10 +518,14 @@ h1, h2, h3, h4, h5, h6 { line-height: 1.2; font-weight: 700; }
   pointer-events: none;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .mobile-only { display: flex; }
-  /* Masque le bouton admin sur mobile — accessible via le drawer */
-  #admin-trigger-btn { display: none; }
+  /* Topbar épurée : garde uniquement notif, annonces, avatar */
+  #firebase-status,
+  #mobile-mode-btn,
+  #search-btn,
+  #theme-toggle,
+  #admin-trigger-btn { display: none !important; }
 }
 
 .tb-btn {
