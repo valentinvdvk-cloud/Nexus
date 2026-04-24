@@ -499,9 +499,45 @@
   <button class="mobile-nav-item" data-nav="finances">
     <span id="mnav-icon-finances"></span><span>Budget</span>
   </button>
+  <button class="mobile-nav-item" id="mnav-more-btn" aria-label="Plus de modules">
+    <span style="font-size:18px;line-height:1;font-weight:900;letter-spacing:-1px">···</span>
+    <span>Plus</span>
+  </button>
 </nav>
 
+<!-- ══ FM MORE DRAWER (force-mobile : inside #app pour rester dans le mockup) ══ -->
+<div id="fm-drawer">
+  <div class="fm-backdrop" id="fm-backdrop"></div>
+  <div class="fm-sheet">
+    <div class="fm-drawer-handle"></div>
+    <div class="fm-drawer-title">Tous les modules</div>
+    <div class="fm-drawer-grid">
+      <button class="fm-drawer-item" data-fm-nav="nutrition">
+        <span id="fmd-icon-nutrition"></span><span>Nutrition</span>
+      </button>
+      <button class="fm-drawer-item" data-fm-nav="contacts">
+        <span id="fmd-icon-contacts"></span><span>Contacts</span>
+      </button>
+      <button class="fm-drawer-item" data-fm-nav="pomodoro">
+        <span id="fmd-icon-pomodoro"></span><span>Pomodoro</span>
+      </button>
+      <button class="fm-drawer-item" data-fm-nav="meteo">
+        <span id="fmd-icon-meteo"></span><span>Météo</span>
+      </button>
+      <button class="fm-drawer-item" data-fm-nav="stockage">
+        <span id="fmd-icon-stockage"></span><span>Stockage</span>
+      </button>
+      <button class="fm-drawer-item" data-fm-nav="stats">
+        <span id="fmd-icon-stats"></span><span>Stats</span>
+      </button>
+    </div>
+  </div>
+</div>
+
 </div><!-- /#app -->
+
+<!-- ══ PHONE EXIT BTN (force-mobile only, outside #app dans le fond desktop) ══ -->
+<button id="phone-exit-btn" aria-label="Quitter le mode téléphone">🖥️ Quitter le mode téléphone</button>
 
 <!-- ══ TOAST CONTAINER ══ -->
 <div id="toast-container" class="toast-container"></div>
@@ -886,6 +922,10 @@ document.addEventListener('DOMContentLoaded', () => {
     'drawer-icon-contacts': 'contacts', 'drawer-icon-pomodoro': 'pomodoro',
     'drawer-icon-meteo': 'meteo', 'drawer-icon-stockage': 'stockage',
     'drawer-icon-stats': 'stats',
+    // FM Drawer icons (force-mobile)
+    'fmd-icon-nutrition': 'nutrition', 'fmd-icon-contacts': 'contacts',
+    'fmd-icon-pomodoro': 'pomodoro', 'fmd-icon-meteo': 'meteo',
+    'fmd-icon-stockage': 'stockage', 'fmd-icon-stats': 'stats',
   };
   Object.entries(navIconMap).forEach(([id, icon]) => {
     const el = document.getElementById(id);
@@ -942,6 +982,30 @@ document.addEventListener('DOMContentLoaded', () => {
       Toast.info(isMobile() ? '📱 Mode iPhone activé' : '🖥️ Mode bureau restauré');
     });
   })();
+
+  /* ── FM More Drawer (force-mobile) ── */
+  (function initFmDrawer() {
+    const drawer  = document.getElementById('fm-drawer');
+    const backdrop = document.getElementById('fm-backdrop');
+    const moreBtn  = document.getElementById('mnav-more-btn');
+    if (!drawer) return;
+    const open  = () => drawer.classList.add('open');
+    const close = () => drawer.classList.remove('open');
+    moreBtn?.addEventListener('click', e => { e.stopPropagation(); open(); });
+    backdrop?.addEventListener('click', close);
+    drawer.querySelectorAll('.fm-drawer-item[data-fm-nav]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        Router.navigate(btn.dataset.fmNav);
+        updateBottomNav(btn.dataset.fmNav);
+        close();
+      });
+    });
+  })();
+
+  /* ── Bouton quitter mode téléphone (outside #app) ── */
+  document.getElementById('phone-exit-btn')?.addEventListener('click', () => {
+    document.getElementById('mobile-mode-btn')?.click();
+  });
 
   /* Init assistant */
   if (typeof Assistant !== 'undefined') Assistant.init();
