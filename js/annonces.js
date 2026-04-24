@@ -8,10 +8,26 @@ const Annonces = {
   /* ── Changelog — ajouter en TÊTE à chaque session ── */
   CHANGELOG: [
     {
-      version: '2.5',
+      version: '2.6',
       date: '2026-04-24',
       label: 'Aujourd\'hui',
       emoji: '🛡️',
+      title: 'Mot de passe texte & journal d\'accès',
+      items: [
+        'Mot de passe texte (longueur libre) à la place du code PIN',
+        'Afficher/masquer le mot de passe (bouton 👁)',
+        'Hash SHA-256 — mots de passe jamais stockés en clair',
+        'Journal d\'accès — chaque connexion enregistrée (IP, appareil, date, rôle)',
+        'IP récupérée via api.ipify.org à chaque connexion',
+        'Panel admin — liste complète des connexions avec badges rôle + filtrage',
+        'Actions admin : effacer les journaux, réinitialiser les tentatives, reconfigurer',
+      ],
+    },
+    {
+      version: '2.5',
+      date: '2026-04-24',
+      label: '2026-04-24',
+      emoji: '🔒',
       title: 'Sécurité renforcée & code d\'accès partagé',
       items: [
         'Code d\'accès unique partagé — même code pour tous les utilisateurs',
