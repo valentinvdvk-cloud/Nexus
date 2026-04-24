@@ -8,10 +8,24 @@ const Annonces = {
   /* ── Changelog — ajouter en TÊTE à chaque session ── */
   CHANGELOG: [
     {
-      version: '2.6',
+      version: '2.7',
       date: '2026-04-24',
       label: 'Aujourd\'hui',
       emoji: '🛡️',
+      title: 'Accès admin simplifié — code secret dans l\'app',
+      items: [
+        'Plus d\'écran de verrouillage au démarrage — app directement accessible',
+        'Bouton 🛡️ dans le topbar — ouvre une fenêtre de saisie du code admin',
+        'Code admin secret → ouvre le panel administrateur directement',
+        'Anti-brute force conservé — verrouillage après 5 tentatives',
+        'Panel admin — journaux d\'accès avec IP, appareil et date de connexion',
+      ],
+    },
+    {
+      version: '2.6',
+      date: '2026-04-24',
+      label: '2026-04-24',
+      emoji: '🔒',
       title: 'Mot de passe texte & journal d\'accès',
       items: [
         'Mot de passe texte (longueur libre) à la place du code PIN',

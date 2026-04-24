@@ -1,36 +1,31 @@
 /* ═══════════════════════════════════════════════════════════
    NEXUS APP — lock.js
-   Mot de passe texte + logs d'accès + panel admin
+   Accès admin via code secret + panel administrateur
 ═══════════════════════════════════════════════════════════ */
 
 const Lock = {
   _K: {
-    access: 'nexus_access_pwd',
-    admin:  'nexus_admin_pwd',
+    admin:  'nexus_admin_code',
     fails:  'nexus_lock_fails',
     locked: 'nexus_lock_until',
     logs:   'nexus_access_logs',
   },
 
-  /* ── Hash SHA-256 via SubtleCrypto (navigateur) ── */
+  /* ── Code admin (stocké haché à l'init) ── */
+  _ADMIN_CODE: 'Q8&mK!4nRx#pL$7Jv@2zT%9wY',
+
+  /* ── Hash SHA-256 ── */
   async _hash(str) {
     const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
     return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
   },
 
-  isSetup()    { return !!localStorage.getItem(this._K.access); },
-  _getHash(k)  { return localStorage.getItem(k) || ''; },
   async _store(k, v) { localStorage.setItem(k, await this._hash(v)); },
 
-  async checkAccess(p) { return (await this._hash(p)) === this._getHash(this._K.access); },
-  async checkAdmin(p)  {
-    const h = this._getHash(this._K.admin);
+  async checkAdmin(p) {
+    const h = localStorage.getItem(this._K.admin);
     return !!h && (await this._hash(p)) === h;
   },
-
-  /* ── Session ── */
-  _sessionOpen() { return sessionStorage.getItem('nexus_lock_session') === '1'; },
-  _openSession() { sessionStorage.setItem('nexus_lock_session', '1'); },
 
   /* ── Brute-force ── */
   _getFails()  { return parseInt(localStorage.getItem(this._K.fails) || '0', 10); },
@@ -47,267 +42,127 @@ const Lock = {
       localStorage.setItem(this._K.locked, Date.now() + dur);
     }
   },
-
   _onSuccess() {
     this._setFails(0);
     localStorage.removeItem(this._K.locked);
   },
 
   /* ── Log d'accès ── */
-  async _logAccess(role) {
+  async _logAccess() {
     let ip = '?';
     try {
       const r = await fetch('https://api.ipify.org?format=json');
       ip = (await r.json()).ip;
     } catch {}
-
     const ua = navigator.userAgent;
-    const device = this._parseDevice(ua);
-    const entry = {
-      id: Date.now().toString(36),
-      ts: new Date().toISOString(),
-      ip,
-      device,
-      role,
-    };
-
+    const device = /iPhone/.test(ua) ? 'iPhone' : /iPad/.test(ua) ? 'iPad'
+      : /Android/.test(ua) ? 'Android' : /Mac/.test(ua) ? 'Mac'
+      : /Windows/.test(ua) ? 'Windows' : 'Autre';
+    const entry = { id: Date.now().toString(36), ts: new Date().toISOString(), ip, device };
     const logs = JSON.parse(localStorage.getItem(this._K.logs) || '[]');
     logs.unshift(entry);
     if (logs.length > 200) logs.splice(200);
     localStorage.setItem(this._K.logs, JSON.stringify(logs));
-
-    /* Tente d'écrire dans Firestore si disponible */
-    if (window.firebaseDb && window.fbFunctions) {
-      try {
-        const { collection, addDoc, serverTimestamp } = window.fbFunctions;
-        await addDoc(collection(window.firebaseDb, 'nexus_access_logs'), {
-          ...entry,
-          serverTs: serverTimestamp(),
-        });
-      } catch {}
-    }
-  },
-
-  _parseDevice(ua) {
-    if (/iPhone/.test(ua)) return 'iPhone';
-    if (/iPad/.test(ua)) return 'iPad';
-    if (/Android/.test(ua)) return 'Android';
-    if (/Mac/.test(ua)) return 'Mac';
-    if (/Windows/.test(ua)) return 'Windows';
-    if (/Linux/.test(ua)) return 'Linux';
-    return 'Inconnu';
   },
 
   /* ──────────────────────────────────────────────────────────
-     Affichage
+     Modal de saisie du code
   ────────────────────────────────────────────────────────── */
-  show(mode) {
-    document.getElementById('lock-overlay')?.remove();
-    const ov = document.createElement('div');
-    ov.id = 'lock-overlay';
-    ov.className = 'lock-overlay';
-    ov.innerHTML = mode === 'setup' ? this._htmlSetup() : this._htmlUnlock();
-    document.body.appendChild(ov);
-    requestAnimationFrame(() => ov.classList.add('visible'));
-    mode === 'setup' ? this._bindSetup(ov) : this._bindUnlock(ov);
-  },
+  openCodeEntry() {
+    if (document.getElementById('admin-code-modal')) return;
 
-  _htmlSetup() {
-    return `
-      <div class="lock-box">
-        <div class="lock-logo">✦ NEXUS</div>
-        <div class="lock-title">Configuration de l'accès</div>
-        <div class="lock-sub">Sécurisez votre application</div>
-
-        <div id="ls-access" class="lock-step-block">
-          <div class="lock-step-badge">Étape 1 / 2</div>
-          <div class="lock-label">Mot de passe d'accès</div>
-          <div class="lock-sub-sm">Ce mot de passe sera demandé à tous les utilisateurs.</div>
-          <div class="lock-input-wrap">
-            <input id="lock-inp-access" class="lock-text-input" type="password"
-              placeholder="Choisissez un mot de passe" autocomplete="new-password"/>
-            <button class="lock-eye-btn" data-target="lock-inp-access">👁</button>
-          </div>
-          <div class="lock-input-wrap" id="wrap-access-confirm">
-            <input id="lock-inp-access2" class="lock-text-input" type="password"
-              placeholder="Confirmez le mot de passe" autocomplete="new-password"/>
-            <button class="lock-eye-btn" data-target="lock-inp-access2">👁</button>
-          </div>
-          <div class="lock-hint" id="ls-access-hint"></div>
-          <button class="lock-submit-btn" id="btn-access-next">Suivant →</button>
-        </div>
-
-        <div id="ls-admin" class="lock-step-block" style="display:none">
-          <div class="lock-step-badge">Étape 2 / 2</div>
-          <div class="lock-label">Mot de passe administrateur</div>
-          <div class="lock-sub-sm">Mot de passe secret pour vous seul. Donne accès au panel admin.</div>
-          <div class="lock-input-wrap">
-            <input id="lock-inp-admin" class="lock-text-input" type="password"
-              placeholder="Mot de passe admin" autocomplete="new-password"/>
-            <button class="lock-eye-btn" data-target="lock-inp-admin">👁</button>
-          </div>
-          <div class="lock-input-wrap">
-            <input id="lock-inp-admin2" class="lock-text-input" type="password"
-              placeholder="Confirmez le mot de passe admin" autocomplete="new-password"/>
-            <button class="lock-eye-btn" data-target="lock-inp-admin2">👁</button>
-          </div>
-          <div class="lock-hint" id="ls-admin-hint"></div>
-          <button class="lock-submit-btn" id="btn-admin-save">Sauvegarder ✓</button>
-        </div>
-      </div>`;
-  },
-
-  _htmlUnlock() {
     const locked = this._isLocked();
-    return `
-      <div class="lock-box">
-        <div class="lock-logo">✦ NEXUS</div>
-        <div class="lock-title">Mot de passe</div>
-        ${locked ? `<div class="lock-lockout" id="lock-lockout">
-          Trop de tentatives — réessayez dans <span id="lock-countdown">${this._lockoutLeft()}</span>s
-        </div>` : ''}
-        <div class="lock-input-wrap" style="margin-top:8px">
-          <input id="lock-inp-main" class="lock-text-input" type="password"
-            placeholder="Entrez votre mot de passe"
-            ${locked ? 'disabled' : ''} autocomplete="current-password"/>
-          <button class="lock-eye-btn" data-target="lock-inp-main">👁</button>
+    const m = document.createElement('div');
+    m.id = 'admin-code-modal';
+    m.className = 'admin-code-modal';
+    m.innerHTML = `
+      <div class="admin-code-box">
+        <div class="admin-code-header">
+          <div class="admin-code-title">Accès administrateur</div>
+          <button class="btn-close" id="admin-code-close">✕</button>
         </div>
-        <div class="lock-error" id="lock-err" style="display:none">Mot de passe incorrect ✕</div>
+        ${locked ? `<div class="lock-lockout">Trop de tentatives — réessayez dans <span id="lock-countdown">${this._lockoutLeft()}</span>s</div>` : ''}
+        <div class="lock-input-wrap">
+          <input id="admin-code-inp" class="lock-text-input" type="password"
+            placeholder="Code administrateur" ${locked ? 'disabled' : ''} autocomplete="off"/>
+          <button class="lock-eye-btn" data-target="admin-code-inp">👁</button>
+        </div>
+        <div class="lock-error" id="admin-code-err" style="display:none">Code incorrect ✕</div>
         <button class="lock-submit-btn${locked ? ' lock-submit-btn--disabled' : ''}"
-          id="btn-unlock" ${locked ? 'disabled' : ''}>Déverrouiller</button>
+          id="admin-code-submit" ${locked ? 'disabled' : ''}>Accéder au panel →</button>
       </div>`;
-  },
 
-  /* ──────────────────────────────────────────────────────────
-     Eye toggle (show/hide password)
-  ────────────────────────────────────────────────────────── */
-  _bindEyes(root) {
-    root.querySelectorAll('.lock-eye-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const inp = document.getElementById(btn.dataset.target);
-        if (!inp) return;
-        inp.type = inp.type === 'password' ? 'text' : 'password';
-        btn.textContent = inp.type === 'password' ? '👁' : '🙈';
-      });
-    });
-  },
+    document.body.appendChild(m);
+    requestAnimationFrame(() => m.classList.add('open'));
 
-  /* ──────────────────────────────────────────────────────────
-     Logique setup
-  ────────────────────────────────────────────────────────── */
-  _bindSetup(ov) {
-    this._bindEyes(ov);
+    if (locked) this._startCountdown('admin-code-inp', 'admin-code-submit');
 
-    const hint = id => document.getElementById(id);
-
-    document.getElementById('btn-access-next')?.addEventListener('click', async () => {
-      const v1 = document.getElementById('lock-inp-access')?.value;
-      const v2 = document.getElementById('lock-inp-access2')?.value;
-      if (!v1 || v1.length < 4) { hint('ls-access-hint').textContent = 'Minimum 4 caractères'; return; }
-      if (v1 !== v2) { hint('ls-access-hint').textContent = 'Les mots de passe ne correspondent pas'; return; }
-      await this._store(this._K.access, v1);
-      document.getElementById('ls-access').style.display = 'none';
-      document.getElementById('ls-admin').style.display  = 'flex';
-      this._bindEyes(ov);
+    /* Eye toggle */
+    m.querySelector('.lock-eye-btn')?.addEventListener('click', () => {
+      const inp = document.getElementById('admin-code-inp');
+      inp.type = inp.type === 'password' ? 'text' : 'password';
+      m.querySelector('.lock-eye-btn').textContent = inp.type === 'password' ? '👁' : '🙈';
     });
 
-    document.getElementById('btn-admin-save')?.addEventListener('click', async () => {
-      const v1 = document.getElementById('lock-inp-admin')?.value;
-      const v2 = document.getElementById('lock-inp-admin2')?.value;
-      if (!v1 || v1.length < 4) { hint('ls-admin-hint').textContent = 'Minimum 4 caractères'; return; }
-      if (v1 !== v2) { hint('ls-admin-hint').textContent = 'Les mots de passe ne correspondent pas'; return; }
-      const accessVal = ''; /* vérification anti-identique via hash */
-      if (v1 === (document.getElementById('lock-inp-access')?.value || '')) {
-        hint('ls-admin-hint').textContent = 'Doit être différent du mot de passe d\'accès';
-        return;
-      }
-      await this._store(this._K.admin, v1);
-      this._doneSetup(ov);
-    });
+    const close = () => {
+      m.classList.remove('open');
+      setTimeout(() => m.remove(), 250);
+    };
 
-    /* Enter key */
-    ov.addEventListener('keydown', async e => {
-      if (e.key !== 'Enter') return;
-      if (document.getElementById('ls-admin')?.style.display !== 'none') {
-        document.getElementById('btn-admin-save')?.click();
-      } else {
-        document.getElementById('btn-access-next')?.click();
-      }
-    });
-  },
-
-  _doneSetup(ov) {
-    ov.classList.add('unlocking');
-    setTimeout(() => { ov.remove(); this._openSession(); }, 400);
-    if (typeof Toast !== 'undefined') Toast.success('🔒 Application sécurisée !');
-  },
-
-  /* ──────────────────────────────────────────────────────────
-     Logique unlock
-  ────────────────────────────────────────────────────────── */
-  _bindUnlock(ov) {
-    if (this._isLocked()) { this._startCountdown(); return; }
+    document.getElementById('admin-code-close')?.addEventListener('click', close);
+    m.addEventListener('click', e => { if (e.target === m) close(); });
 
     const submit = async () => {
       if (this._isLocked()) return;
-      const val = document.getElementById('lock-inp-main')?.value || '';
-      const err = document.getElementById('lock-err');
+      const val = document.getElementById('admin-code-inp')?.value || '';
+      const err = document.getElementById('admin-code-err');
 
-      if (await this.checkAccess(val)) {
+      if (await this.checkAdmin(val)) {
         this._onSuccess();
-        ov.classList.add('unlocking');
-        this._logAccess('user');
-        setTimeout(() => { ov.remove(); this._openSession(); }, 380);
-
-      } else if (await this.checkAdmin(val)) {
-        this._onSuccess();
-        ov.classList.add('unlocking');
-        this._logAccess('admin');
-        setTimeout(() => {
-          ov.remove();
-          this._openSession();
-          setTimeout(() => this.openAdmin(), 300);
-        }, 380);
-
+        this._logAccess();
+        close();
+        setTimeout(() => this.openAdmin(), 260);
       } else {
         this._onFail();
-        ov.classList.add('lock-shake');
-        setTimeout(() => ov.classList.remove('lock-shake'), 420);
+        const box = m.querySelector('.admin-code-box');
+        box.classList.add('lock-shake-box');
+        setTimeout(() => box.classList.remove('lock-shake-box'), 420);
         if (err) err.style.display = 'block';
-        const inp = document.getElementById('lock-inp-main');
+        const inp = document.getElementById('admin-code-inp');
         if (inp) inp.value = '';
-
         if (this._isLocked()) {
           if (err) err.style.display = 'none';
-          const btn = document.getElementById('btn-unlock');
-          const inp2 = document.getElementById('lock-inp-main');
+          const btn = document.getElementById('admin-code-submit');
+          if (inp) inp.disabled = true;
           if (btn) { btn.disabled = true; btn.classList.add('lock-submit-btn--disabled'); }
-          if (inp2) inp2.disabled = true;
           const lo = document.createElement('div');
           lo.className = 'lock-lockout'; lo.id = 'lock-lockout';
           lo.innerHTML = `Trop de tentatives — réessayez dans <span id="lock-countdown">${this._lockoutLeft()}</span>s`;
-          ov.querySelector('.lock-title')?.insertAdjacentElement('afterend', lo);
-          this._startCountdown();
+          m.querySelector('.admin-code-header')?.insertAdjacentElement('afterend', lo);
+          this._startCountdown('admin-code-inp', 'admin-code-submit');
         }
       }
     };
 
-    document.getElementById('btn-unlock')?.addEventListener('click', submit);
-    ov.addEventListener('keydown', e => { if (e.key === 'Enter') submit(); });
-    this._bindEyes(ov);
+    document.getElementById('admin-code-submit')?.addEventListener('click', submit);
+    document.getElementById('admin-code-inp')?.addEventListener('keydown', e => {
+      if (e.key === 'Enter') submit();
+    });
+
+    setTimeout(() => document.getElementById('admin-code-inp')?.focus(), 100);
   },
 
-  _startCountdown() {
+  _startCountdown(inpId, btnId) {
     const tick = () => {
       const el = document.getElementById('lock-countdown');
       if (!el) return;
       const left = this._lockoutLeft();
       if (left <= 0) {
-        const btn  = document.getElementById('btn-unlock');
-        const inp  = document.getElementById('lock-inp-main');
-        const lo   = document.getElementById('lock-lockout');
-        if (btn) { btn.disabled = false; btn.classList.remove('lock-submit-btn--disabled'); }
+        const inp = document.getElementById(inpId);
+        const btn = document.getElementById(btnId);
+        const lo  = document.getElementById('lock-lockout');
         if (inp) inp.disabled = false;
+        if (btn) { btn.disabled = false; btn.classList.remove('lock-submit-btn--disabled'); }
         if (lo)  lo.remove();
         return;
       }
@@ -368,31 +223,29 @@ const Lock = {
           Journaux d'accès
           <span class="admin-log-count">${logs.length} entrée${logs.length !== 1 ? 's' : ''}</span>
         </div>
-        ${logs.length === 0 ? `
-          <div class="admin-empty-logs">Aucune connexion enregistrée</div>
-        ` : `
-          <div class="admin-log-list">
-            ${logs.map(l => `
-              <div class="admin-log-entry">
-                <div class="admin-log-top">
-                  <span class="admin-log-role admin-log-role--${l.role}">${l.role === 'admin' ? '🛡️ Admin' : '👤 Utilisateur'}</span>
-                  <span class="admin-log-device">${l.device}</span>
-                </div>
-                <div class="admin-log-ip">🌐 ${l.ip}</div>
-                <div class="admin-log-date">${new Date(l.ts).toLocaleString('fr-FR')}</div>
-              </div>
-            `).join('')}
-          </div>
-        `}
+        ${logs.length === 0
+          ? `<div class="admin-empty-logs">Aucune connexion admin enregistrée</div>`
+          : `<div class="admin-log-list">
+              ${logs.map(l => `
+                <div class="admin-log-entry">
+                  <div class="admin-log-top">
+                    <span class="admin-log-role admin-log-role--admin">🛡️ Admin</span>
+                    <span class="admin-log-device">${l.device}</span>
+                  </div>
+                  <div class="admin-log-ip">🌐 ${l.ip}</div>
+                  <div class="admin-log-date">${new Date(l.ts).toLocaleString('fr-FR')}</div>
+                </div>`).join('')}
+            </div>`
+        }
 
         <div class="admin-section-title" style="margin-top:20px">Sécurité</div>
         <div class="admin-security-info">
           <div class="admin-security-row">
             <span>🔒 Anti-brute force</span>
-            <span class="admin-badge ${locked ? 'admin-badge-warn' : 'admin-badge-ok'}">${locked ? `Actif (${this._lockoutLeft()}s)` : 'Actif'}</span>
+            <span class="admin-badge ${locked ? 'admin-badge-warn' : 'admin-badge-ok'}">${locked ? `Verrouillé (${this._lockoutLeft()}s)` : 'Actif'}</span>
           </div>
           <div class="admin-security-row">
-            <span>🔑 Hash des mots de passe</span>
+            <span>🔑 Hash du code</span>
             <span class="admin-badge admin-badge-ok">SHA-256</span>
           </div>
         </div>
@@ -401,11 +254,8 @@ const Lock = {
         <button class="btn btn-outline btn-sm w-full" id="admin-clear-logs" style="margin-bottom:8px">
           🗑️ Effacer les journaux d'accès
         </button>
-        <button class="btn btn-outline btn-sm w-full" id="admin-reset-fails" style="margin-bottom:8px">
+        <button class="btn btn-outline btn-sm w-full" id="admin-reset-fails">
           🔓 Réinitialiser les tentatives échouées
-        </button>
-        <button class="btn btn-outline btn-sm w-full" id="admin-reset-codes">
-          🔑 Reconfigurer les mots de passe
         </button>
       </div>`;
 
@@ -430,21 +280,17 @@ const Lock = {
       if (typeof Toast !== 'undefined') Toast.success('Tentatives réinitialisées');
       p.remove(); this.openAdmin();
     });
-
-    document.getElementById('admin-reset-codes')?.addEventListener('click', () => {
-      if (!confirm('Reconfigurer les mots de passe ? Les anciens seront effacés.')) return;
-      p.remove();
-      [this._K.access, this._K.admin, this._K.fails, this._K.locked].forEach(k =>
-        localStorage.removeItem(k)
-      );
-      sessionStorage.removeItem('nexus_lock_session');
-      this.show('setup');
-    });
   },
 
-  /* ── Init ── */
-  init() {
-    if (this._sessionOpen()) return;
-    this.show(this.isSetup() ? 'unlock' : 'setup');
+  /* ── Init : stocke le hash du code admin + bind le bouton ── */
+  async init() {
+    /* Stocke le hash du code admin si pas encore fait */
+    if (!localStorage.getItem(this._K.admin)) {
+      await this._store(this._K.admin, this._ADMIN_CODE);
+    }
+
+    /* Bind le bouton topbar */
+    const btn = document.getElementById('admin-trigger-btn');
+    if (btn) btn.addEventListener('click', () => this.openCodeEntry());
   },
 };

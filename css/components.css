@@ -1596,97 +1596,54 @@ input[type="checkbox"], input[type="radio"] { min-height: auto; }
   margin-bottom: 2px;
 }
 
-/* ─── Lock Screen ─── */
-.lock-overlay {
+/* ─── Admin Code Modal ─── */
+.admin-code-modal {
   position: fixed;
   inset: 0;
-  background: var(--bg-primary, #0A0A0F);
-  z-index: 9999;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  z-index: 9000;
   display: flex;
   align-items: center;
   justify-content: center;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.22s ease;
 }
-.lock-overlay.visible   { opacity: 1; }
-.lock-overlay.unlocking { opacity: 0; pointer-events: none; }
+.admin-code-modal.open { opacity: 1; }
+
+.admin-code-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  width: 340px;
+  max-width: 92vw;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+.admin-code-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
 
 @keyframes lock-shake {
   0%,100% { transform: translateX(0); }
-  20%     { transform: translateX(-10px); }
-  40%     { transform: translateX(10px); }
-  60%     { transform: translateX(-6px); }
-  80%     { transform: translateX(6px); }
+  20%     { transform: translateX(-8px); }
+  40%     { transform: translateX(8px); }
+  60%     { transform: translateX(-5px); }
+  80%     { transform: translateX(5px); }
 }
-.lock-shake .lock-box { animation: lock-shake 0.42s ease; }
-
-.lock-box {
-  width: 320px;
-  max-width: 90vw;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 0 16px;
-}
-
-.lock-logo {
-  font-family: 'Fraunces', serif;
-  font-size: 30px;
-  font-weight: 700;
-  background: linear-gradient(135deg, #8B5CF6, #06B6D4);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  letter-spacing: 2px;
-  margin-bottom: 20px;
-}
-.lock-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: 6px;
-  text-align: center;
-}
-.lock-sub {
-  font-size: 13px;
-  color: var(--text-muted);
-  text-align: center;
-  margin-bottom: 24px;
-}
-.lock-sub-sm {
-  font-size: 12px;
-  color: var(--text-muted);
-  text-align: center;
-  margin-bottom: 16px;
-}
-.lock-label {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-secondary);
-  margin-bottom: 12px;
-  text-align: center;
-}
-.lock-hint {
-  font-size: 12px;
-  color: var(--text-muted);
-  margin-top: 12px;
-  text-align: center;
-  min-height: 18px;
-}
-.lock-error {
-  font-size: 13px;
-  color: #EF4444;
-  font-weight: 600;
-  margin-top: 14px;
-  text-align: center;
-}
-
-.lock-step-block {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+.lock-shake-box { animation: lock-shake 0.42s ease; }
 
 .lock-lockout {
   font-size: 13px;
@@ -1702,14 +1659,6 @@ input[type="checkbox"], input[type="radio"] { min-height: auto; }
   box-sizing: border-box;
 }
 
-.lock-step-badge {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: #8B5CF6;
-  margin-bottom: 12px;
-}
 
 .lock-input-wrap {
   position: relative;
