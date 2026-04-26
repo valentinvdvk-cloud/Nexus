@@ -1,4 +1,4 @@
-const CACHE = 'nexus-v7';
+const CACHE = 'nexus-v8';
 
 const FILES = [
   '.',

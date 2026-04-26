@@ -1805,25 +1805,25 @@ body.force-mobile #main-content {
   -webkit-overflow-scrolling: touch;
 }
 
-/* Nav mobile : position fixed ABSOLUTE dans le mockup (z-index au-dessus de tout) */
+/* Nav mobile : flex child naturel de #app — jamais fixed, toujours visible */
 body.force-mobile #mobile-nav {
   display: flex !important;
-  position: fixed !important;
-  bottom: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
+  position: relative !important;
+  bottom: auto !important;
+  left: auto !important;
+  right: auto !important;
   width: 100% !important;
   height: 64px !important;
-  z-index: 600 !important;  /* Au-dessus du fm-drawer (400) */
+  flex-shrink: 0 !important;
+  z-index: 600 !important;
   background: rgba(10,10,15,0.97) !important;
   border-top: 1px solid var(--border);
   backdrop-filter: blur(24px) saturate(1.6);
   padding-bottom: 0 !important;
-  flex-shrink: 0;
 }
-/* Contenu scroll : padding pour ne pas être caché sous la nav */
+/* Contenu : nav dans le flow flex, pas de padding bas nécessaire */
 body.force-mobile #main-content {
-  padding-bottom: 80px !important;
+  padding-bottom: 16px !important;
 }
 
 /* Topbar compact */

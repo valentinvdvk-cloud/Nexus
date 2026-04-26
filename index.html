@@ -1028,9 +1028,10 @@ document.addEventListener('DOMContentLoaded', () => {
               app.appendChild(panel);
               panel.classList.add('phone-mode');
             }
+            panel.classList.remove('hidden');
             panel.style.display = '';
           }
-          Assistant.toggle();
+          Assistant.show();
         }, 150);
       }
     });
