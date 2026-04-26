@@ -1001,6 +1001,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!drawer) return;
     const open  = () => drawer.classList.add('open');
     const close = () => drawer.classList.remove('open');
+    /* Expose globalement pour fermeture depuis la nav */
+    window.closeFmDrawer = close;
     moreBtn?.addEventListener('click', e => { e.stopPropagation(); open(); });
     backdrop?.addEventListener('click', close);
 

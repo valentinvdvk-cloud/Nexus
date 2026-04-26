@@ -692,6 +692,7 @@ function initApp() {
     el.addEventListener('click', () => {
       Router.navigate(el.dataset.nav);
       if (typeof updateBottomNav === 'function') updateBottomNav(el.dataset.nav);
+      if (typeof window.closeFmDrawer === 'function') window.closeFmDrawer();
     });
     addRipple(el);
   });

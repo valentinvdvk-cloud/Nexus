@@ -1805,15 +1805,25 @@ body.force-mobile #main-content {
   -webkit-overflow-scrolling: touch;
 }
 
-/* Nav mobile visible en bas (flex child de #app) */
+/* Nav mobile : position fixed ABSOLUTE dans le mockup (z-index au-dessus de tout) */
 body.force-mobile #mobile-nav {
   display: flex !important;
-  flex-shrink: 0;
-  height: 64px;
-  background: rgba(10,10,15,0.95);
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  height: 64px !important;
+  z-index: 600 !important;  /* Au-dessus du fm-drawer (400) */
+  background: rgba(10,10,15,0.97) !important;
   border-top: 1px solid var(--border);
-  backdrop-filter: blur(20px);
-  padding-bottom: 0;
+  backdrop-filter: blur(24px) saturate(1.6);
+  padding-bottom: 0 !important;
+  flex-shrink: 0;
+}
+/* Contenu scroll : padding pour ne pas être caché sous la nav */
+body.force-mobile #main-content {
+  padding-bottom: 80px !important;
 }
 
 /* Topbar compact */
@@ -1919,7 +1929,7 @@ body.force-mobile .admin-code-modal { position: fixed !important; }
   display: none;
   position: fixed;
   inset: 0;
-  z-index: 400;
+  z-index: 550;  /* Entre le contenu (bas) et la nav (600) → s'affiche par-dessus le contenu */
   pointer-events: none;
 }
 body.force-mobile #fm-drawer { display: block; }
@@ -2217,6 +2227,7 @@ body.force-mobile .notes-layout.fm-editing #fm-notes-back svg { width: 16px; hei
 
 /* ── Assistant panel en mode phone (déplacé dans #app par JS) ── */
 body.force-mobile #assistant-panel.phone-mode {
+  display: flex !important;  /* Override le display:none !important de la règle générale */
   position: fixed !important;
   inset: 0 !important;
   width: 100% !important;
@@ -2228,11 +2239,11 @@ body.force-mobile #assistant-panel.phone-mode {
   bottom: auto !important;
   top: 0 !important;
   left: 0 !important;
-  display: flex;
   flex-direction: column;
   box-shadow: none !important;
-  transform: none !important;
+  transform: translateY(0) !important;
 }
+/* .hidden reprend le dessus (plus spécifique que .phone-mode seul) */
 body.force-mobile #assistant-panel.phone-mode.hidden { display: none !important; }
 
 /* ── Avatar dropdown : reste dans le mockup ── */
