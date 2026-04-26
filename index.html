@@ -659,6 +659,9 @@
           <button id="btn-reset" class="btn btn-danger btn-sm">
             <span id="set-reset-icon"></span> Réinitialiser
           </button>
+          <button id="btn-clear-cache" class="btn btn-outline btn-sm" title="Vide le cache du service worker et recharge l'app">
+            🔄 Vider le cache
+          </button>
         </div>
       </div>
     </div>
@@ -1088,6 +1091,18 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   })();
+
+  /* ── Vider le cache SW ── */
+  document.getElementById('btn-clear-cache')?.addEventListener('click', async () => {
+    const keys = await caches.keys();
+    await Promise.all(keys.map(k => caches.delete(k)));
+    if ('serviceWorker' in navigator) {
+      const regs = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(regs.map(r => r.unregister()));
+    }
+    Toast.success('Cache vidé — rechargement...');
+    setTimeout(() => window.location.reload(true), 800);
+  });
 
   /* ── Bouton quitter mode téléphone (outside #app) ── */
   document.getElementById('phone-exit-btn')?.addEventListener('click', () => {

@@ -772,6 +772,26 @@ function initApp() {
   Bus.emit('appReady', {});
 
   console.log('%cNEXUS APP ready', 'color:#7C3AED;font-weight:bold;font-size:14px');
+  registerSW();
+}
+
+/* ── Service Worker — enregistrement + rechargement auto ── */
+function registerSW() {
+  if (!('serviceWorker' in navigator)) return;
+  let swRefreshing = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!swRefreshing) { swRefreshing = true; window.location.reload(); }
+  });
+  navigator.serviceWorker.register('sw.js').then(reg => {
+    reg.addEventListener('updatefound', () => {
+      const sw = reg.installing;
+      sw?.addEventListener('statechange', () => {
+        if (sw.state === 'installed' && navigator.serviceWorker.controller) {
+          console.log('[SW] Nouvelle version installée — rechargement...');
+        }
+      });
+    });
+  }).catch(e => console.warn('[SW] Échec enregistrement', e));
 }
 
 function renderNotifDropdown() {
