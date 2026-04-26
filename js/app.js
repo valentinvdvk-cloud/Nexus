@@ -689,7 +689,10 @@ function initApp() {
 
   /* Nav clicks */
   document.querySelectorAll('[data-nav]').forEach(el => {
-    el.addEventListener('click', () => Router.navigate(el.dataset.nav));
+    el.addEventListener('click', () => {
+      Router.navigate(el.dataset.nav);
+      if (typeof updateBottomNav === 'function') updateBottomNav(el.dataset.nav);
+    });
     addRipple(el);
   });
 

@@ -1045,9 +1045,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* ── Bottom nav helpers (global) ── */
 function updateBottomNav(activeModule) {
+  /* Barre de navigation externe (vrai mobile) */
   document.querySelectorAll('.bottom-nav-item').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.module === activeModule);
   });
+  /* Barre interne force-mobile : bouton Plus actif si module hors nav principale */
+  const mainMods = ['dashboard', 'musculation', 'agenda', 'notes', 'finances'];
+  const inDrawer = !mainMods.includes(activeModule);
+  document.getElementById('mnav-more-btn')?.classList.toggle('active', inDrawer);
+  /* Libellé topbar */
   const label = {
     dashboard:'Dashboard', musculation:'Sport', agenda:'Agenda', finances:'Finances',
     nutrition:'Nutrition', notes:'Notes', contacts:'Contacts', pomodoro:'Pomodoro',

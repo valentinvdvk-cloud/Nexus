@@ -2016,3 +2016,152 @@ body.force-mobile #phone-exit-btn { display: block; }
   border-color: rgba(255,255,255,0.25);
   background: rgba(30,30,45,0.9);
 }
+
+/* ═══════════════════════════════════════════════════════════
+   FORCE-MOBILE — POLISSAGE UI : tab bar iOS, overflow, modules
+═══════════════════════════════════════════════════════════ */
+
+/* Fond desktop plus beau derrière le mockup */
+body.force-mobile {
+  background:
+    radial-gradient(ellipse at 25% 35%, rgba(124,58,237,0.14) 0%, transparent 55%),
+    radial-gradient(ellipse at 75% 65%, rgba(6,182,212,0.09) 0%, transparent 50%),
+    #070710 !important;
+}
+
+/* ── iOS Tab bar ── */
+body.force-mobile #mobile-nav {
+  background: rgba(12,12,20,0.98) !important;
+  padding: 0 4px !important;
+  gap: 0 !important;
+}
+body.force-mobile .mobile-nav-item {
+  font-size: 9.5px !important;
+  padding: 8px 2px 5px !important;
+  gap: 3px !important;
+  min-width: 0;
+  flex: 1;
+  color: rgba(160,158,180,0.7) !important;
+  transition: color 180ms ease, transform 100ms ease;
+  position: relative;
+}
+body.force-mobile .mobile-nav-item svg { width: 20px !important; height: 20px !important; }
+body.force-mobile .mobile-nav-item:active { transform: scale(0.82); transition: transform 80ms; }
+body.force-mobile .mobile-nav-item.active { color: var(--accent-purple-light) !important; }
+body.force-mobile .mobile-nav-item.active svg {
+  filter: drop-shadow(0 0 7px rgba(167,139,250,0.6));
+}
+body.force-mobile .mobile-nav-item.active::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 22px; height: 3px;
+  background: var(--accent-purple-light);
+  border-radius: 0 0 3px 3px;
+}
+
+/* ── Bouton Plus actif (module depuis drawer) ── */
+body.force-mobile #mnav-more-btn { color: rgba(160,158,180,0.7) !important; }
+body.force-mobile #mnav-more-btn.active { color: var(--accent-purple-light) !important; }
+body.force-mobile #mnav-more-btn span:first-child {
+  font-size: 20px !important;
+  line-height: 1;
+  letter-spacing: -1px;
+  font-weight: 800;
+}
+
+/* ── Topbar compacte ── */
+body.force-mobile .topbar-right { gap: 2px !important; }
+body.force-mobile .tb-btn { width: 33px !important; height: 33px !important; }
+body.force-mobile .tb-avatar { width: 29px !important; height: 29px !important; font-size: 0.7rem !important; }
+
+/* ── Notifications dropdown : rester dans le mockup ── */
+body.force-mobile .notif-dropdown {
+  width: 100% !important;
+  max-width: calc(390px - 20px) !important;
+  right: -4px !important;
+  left: auto !important;
+}
+body.force-mobile .annonces-panel { left: 0 !important; right: 0 !important; width: 100% !important; }
+
+/* ── Overflow protection globale ── */
+body.force-mobile .module-body,
+body.force-mobile .module-pane { overflow-x: hidden; word-break: break-word; }
+body.force-mobile .card,
+body.force-mobile .stat-card,
+body.force-mobile .summary-card { overflow: hidden; max-width: 100%; }
+
+/* ── Tables scrollables ── */
+body.force-mobile .table-wrap,
+body.force-mobile [class*="table-"] { overflow-x: auto !important; -webkit-overflow-scrolling: touch; }
+body.force-mobile table { min-width: 0 !important; width: 100%; font-size: 0.82rem; }
+body.force-mobile th, body.force-mobile td { padding: 8px 10px !important; }
+
+/* ── Charts réduits ── */
+body.force-mobile canvas { max-height: 190px !important; }
+body.force-mobile .chart-container,
+body.force-mobile .chart-wrap,
+body.force-mobile [class*="chart"] { height: 180px !important; max-height: 190px !important; }
+
+/* ── Inputs et selects ── */
+body.force-mobile input,
+body.force-mobile select,
+body.force-mobile textarea {
+  font-size: 16px !important; /* évite zoom iOS */
+  max-width: 100%;
+}
+
+/* ── Actions de module compactes ── */
+body.force-mobile .module-actions { gap: 6px !important; }
+body.force-mobile .module-actions .btn,
+body.force-mobile .module-actions button:not(.btn-icon) {
+  padding: 6px 10px !important;
+  font-size: 0.8rem !important;
+}
+body.force-mobile .module-title { font-size: 0.95rem !important; letter-spacing: -0.01em; }
+
+/* ── Dashboard ── */
+body.force-mobile .dash-grid { gap: 10px !important; }
+body.force-mobile .stat-value,
+body.force-mobile .metric-value { font-size: 1.6rem !important; }
+body.force-mobile .card-body { padding: 12px !important; }
+
+/* ── Musculation : séries/répétitions ── */
+body.force-mobile .set-row,
+body.force-mobile .serie-row { flex-wrap: wrap !important; gap: 8px !important; }
+body.force-mobile .set-row input,
+body.force-mobile .serie-row input,
+body.force-mobile .reps-input,
+body.force-mobile .weight-input { width: 68px !important; min-width: 0 !important; }
+
+/* ── Agenda : calendrier ── */
+body.force-mobile .cal-day { min-height: 34px !important; padding: 2px 3px !important; font-size: 0.72rem !important; }
+body.force-mobile .event-pill { font-size: 9px !important; padding: 1px 4px !important; }
+
+/* ── Finances : onglets et transactions ── */
+body.force-mobile .tab-item,
+body.force-mobile .finances-tab { font-size: 0.8rem !important; padding: 6px 10px !important; }
+body.force-mobile .transaction-label { font-size: 0.82rem !important; }
+body.force-mobile .transaction-amount { font-size: 0.88rem !important; }
+
+/* ── FM Drawer : padding bas au-dessus de la nav ── */
+.fm-sheet { padding-bottom: 80px !important; }
+.fm-drawer-grid { gap: 8px !important; }
+.fm-drawer-item { padding: 12px 6px 10px !important; font-size: 10.5px !important; }
+.fm-drawer-item svg { width: 24px !important; height: 24px !important; }
+.fm-drawer-title { font-size: 9.5px !important; letter-spacing: 0.12em; }
+
+/* ── Pomodoro ── */
+body.force-mobile .pomodoro-timer { font-size: 3.5rem !important; }
+
+/* ── Contacts ── */
+body.force-mobile .contact-avatar { width: 40px !important; height: 40px !important; }
+
+/* ── Stockage ── */
+body.force-mobile .storage-bar { height: 10px !important; }
+
+/* ── Notes : liste plein écran ── */
+body.force-mobile .note-item { padding: 10px 12px !important; }
+body.force-mobile .note-title { font-size: 0.9rem !important; }
+body.force-mobile .note-preview { font-size: 0.78rem !important; }
