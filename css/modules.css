@@ -2165,3 +2165,255 @@ body.force-mobile .storage-bar { height: 10px !important; }
 body.force-mobile .note-item { padding: 10px 12px !important; }
 body.force-mobile .note-title { font-size: 0.9rem !important; }
 body.force-mobile .note-preview { font-size: 0.78rem !important; }
+
+/* ════════════════════════════════════════════════════════════
+   FORCE-MOBILE v2 — Correctifs complets
+════════════════════════════════════════════════════════════ */
+
+/* ── Hamburger sidebar inutile en force-mobile ── */
+body.force-mobile #mobile-menu-btn { display: none !important; }
+
+/* ── Padding bas critique : évite que le contenu se cache derrière la nav 64px ── */
+body.force-mobile .module-pane { padding-bottom: 88px !important; }
+
+/* ── Notes phone : bascule liste ↔ éditeur ── */
+body.force-mobile .notes-layout {
+  display: flex !important;
+  flex-direction: column;
+  gap: 0 !important;
+  height: auto !important;
+}
+body.force-mobile .notes-list-panel { display: flex !important; flex-direction: column; overflow: hidden; }
+body.force-mobile .notes-editor-panel { display: none !important; }
+/* Classe ajoutée par JS quand on ouvre une note */
+body.force-mobile .notes-layout.fm-editing .notes-list-panel { display: none !important; }
+body.force-mobile .notes-layout.fm-editing .notes-editor-panel {
+  display: flex !important;
+  flex-direction: column;
+  flex: 1;
+}
+
+/* Bouton retour notes */
+#fm-notes-back {
+  display: none;
+}
+body.force-mobile .notes-layout.fm-editing #fm-notes-back {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 0 12px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--accent-purple-light);
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  margin-bottom: 14px;
+  width: 100%;
+  letter-spacing: -0.01em;
+}
+body.force-mobile .notes-layout.fm-editing #fm-notes-back svg { width: 16px; height: 16px; }
+
+/* ── Assistant panel en mode phone (déplacé dans #app par JS) ── */
+body.force-mobile #assistant-panel.phone-mode {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: 100% !important;
+  border-radius: 0 !important;
+  z-index: 998 !important;
+  right: auto !important;
+  bottom: auto !important;
+  top: 0 !important;
+  left: 0 !important;
+  display: flex;
+  flex-direction: column;
+  box-shadow: none !important;
+  transform: none !important;
+}
+body.force-mobile #assistant-panel.phone-mode.hidden { display: none !important; }
+
+/* ── Avatar dropdown : reste dans le mockup ── */
+body.force-mobile .avatar-dropdown {
+  position: absolute !important;
+  right: 0 !important;
+  left: auto !important;
+  top: calc(100% + 6px) !important;
+  width: 270px !important;
+  max-height: 65vh !important;
+  overflow-y: auto !important;
+}
+
+/* ── Notifications : reste dans le mockup ── */
+body.force-mobile .notif-dropdown {
+  max-height: 60vh !important;
+  overflow-y: auto !important;
+  right: 0 !important;
+  left: auto !important;
+  width: 300px !important;
+}
+
+/* ── Topbar brand centrée (absolute pour ne pas pousser les icônes) ── */
+body.force-mobile .topbar-brand {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+/* ── Dashboard compact ── */
+body.force-mobile .stats-grid {
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 8px !important;
+}
+body.force-mobile .stat-card { padding: 12px !important; }
+body.force-mobile .stat-value { font-size: 1.4rem !important; }
+body.force-mobile .greeting-hero {
+  padding: 14px !important;
+  margin-bottom: 12px !important;
+}
+body.force-mobile .greeting-title { font-size: 1.25rem !important; line-height: 1.3 !important; }
+body.force-mobile .greeting-date { font-size: 0.78rem !important; }
+body.force-mobile .quote-card { padding: 12px 14px !important; margin-bottom: 12px !important; }
+body.force-mobile .quote-text { font-size: 0.82rem !important; }
+/* Quick actions en grille 3×2 */
+body.force-mobile .quick-actions {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 8px !important;
+}
+body.force-mobile .quick-action-btn {
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 10px 6px !important;
+  font-size: 0.72rem !important;
+  gap: 5px !important;
+  text-align: center;
+  min-height: 58px;
+}
+body.force-mobile .quick-action-btn svg { width: 18px !important; height: 18px !important; }
+body.force-mobile #recent-activity .activity-item { padding: 8px 0 !important; }
+
+/* ── Musculation compact ── */
+body.force-mobile .session-header { gap: 10px !important; }
+body.force-mobile .session-muscle-icon { width: 38px !important; height: 38px !important; font-size: 1.2rem !important; }
+body.force-mobile .session-name { font-size: 0.875rem !important; }
+body.force-mobile .session-meta { font-size: 0.75rem !important; }
+body.force-mobile .exercise-row {
+  grid-template-columns: 1fr auto auto !important;
+  gap: 6px !important;
+}
+
+/* ── Agenda compact ── */
+body.force-mobile .cal-day { min-height: 30px !important; padding: 1px 2px !important; }
+body.force-mobile .event-pill { font-size: 8px !important; padding: 1px 3px !important; }
+
+/* ── Finances compact ── */
+body.force-mobile .balance-hero { padding: 12px 14px !important; }
+body.force-mobile .balance-amount { font-size: 1.8rem !important; }
+body.force-mobile .transaction-item,
+body.force-mobile .transaction-card { padding: 8px 10px !important; }
+body.force-mobile .transaction-label { font-size: 0.8rem !important; }
+body.force-mobile .transaction-amount { font-size: 0.85rem !important; }
+
+/* ── Nutrition compact ── */
+body.force-mobile .day-totals { flex-wrap: wrap !important; gap: 8px !important; }
+body.force-mobile .macro-bar-label { font-size: 0.75rem !important; }
+
+/* ── Pomodoro compact ── */
+body.force-mobile .pom-timer-ring { width: 180px !important; height: 180px !important; }
+body.force-mobile .pom-timer-display,
+body.force-mobile .pomodoro-timer { font-size: 2.8rem !important; }
+body.force-mobile .pom-controls { gap: 10px !important; }
+body.force-mobile .pom-tasks-list { max-height: 200px !important; overflow-y: auto; }
+
+/* ── Météo compact ── */
+body.force-mobile .weather-hero { padding: 14px !important; }
+body.force-mobile .weather-temp { font-size: 3.2rem !important; }
+body.force-mobile .forecast-card { padding: 8px !important; min-width: 68px !important; }
+body.force-mobile .forecast-temp { font-size: 0.8rem !important; }
+
+/* ── Contacts compact ── */
+body.force-mobile .contact-row { padding: 8px 0 !important; }
+body.force-mobile .contact-name { font-size: 0.875rem !important; }
+
+/* ── Stockage compact ── */
+body.force-mobile .storage-summary { flex-wrap: wrap !important; gap: 8px !important; }
+
+/* ── Stats compact ── */
+body.force-mobile .stats-header { margin-bottom: 12px !important; }
+
+/* ── Scrollbar fine ── */
+body.force-mobile #main-content::-webkit-scrollbar { width: 2px; }
+body.force-mobile #main-content::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.12);
+  border-radius: 2px;
+}
+
+/* ── Modals en phone mode : fond scrollable ── */
+body.force-mobile .modal-body { max-height: 70vh !important; overflow-y: auto !important; }
+
+/* ── FM Drawer : style bouton assistant ── */
+.fm-drawer-item.fm-asst-btn {
+  background: linear-gradient(135deg, rgba(124,58,237,0.18) 0%, rgba(6,182,212,0.1) 100%) !important;
+  border-color: rgba(124,58,237,0.4) !important;
+  color: var(--accent-purple-light) !important;
+}
+.fm-drawer-item.fm-asst-btn svg {
+  filter: drop-shadow(0 0 6px rgba(167,139,250,0.55));
+}
+.fm-drawer-item.fm-asst-btn:active {
+  background: rgba(124,58,237,0.35) !important;
+}
+
+/* ── Section headers compacts ── */
+body.force-mobile .section-header { margin-bottom: 10px !important; }
+body.force-mobile .section-title { font-size: 0.85rem !important; }
+
+/* ── Search overlay : centré sur le phone mockup ── */
+body.force-mobile .search-overlay {
+  width: 390px !important;
+  height: 844px !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  right: auto !important;
+  bottom: auto !important;
+  border-radius: 50px !important;
+  overflow: hidden !important;
+  z-index: 600 !important;
+}
+body.force-mobile .search-box {
+  margin: 60px 16px 0 !important;
+  width: auto !important;
+  max-width: 100% !important;
+}
+
+/* ── Modal overlays : centrés sur le phone mockup ── */
+body.force-mobile .modal:not(.hidden) {
+  width: 390px !important;
+  height: 844px !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  right: auto !important;
+  bottom: auto !important;
+  border-radius: 50px !important;
+  overflow: hidden !important;
+  z-index: 600 !important;
+}
+
+/* ── Topbar : hauteur cohérente et boutons bien alignés ── */
+body.force-mobile #topbar {
+  position: relative;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* ── Notif badge dans phone mode ── */
+body.force-mobile .notif-badge { font-size: 9px !important; min-width: 14px; height: 14px; }

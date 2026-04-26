@@ -510,7 +510,7 @@
   <div class="fm-backdrop" id="fm-backdrop"></div>
   <div class="fm-sheet">
     <div class="fm-drawer-handle"></div>
-    <div class="fm-drawer-title">Tous les modules</div>
+    <div class="fm-drawer-title">Modules & outils</div>
     <div class="fm-drawer-grid">
       <button class="fm-drawer-item" data-fm-nav="nutrition">
         <span id="fmd-icon-nutrition"></span><span>Nutrition</span>
@@ -529,6 +529,15 @@
       </button>
       <button class="fm-drawer-item" data-fm-nav="stats">
         <span id="fmd-icon-stats"></span><span>Stats</span>
+      </button>
+      <button class="fm-drawer-item fm-asst-btn" id="fm-assistant-btn">
+        <span id="fmd-icon-assistant"></span><span>Assistant</span>
+      </button>
+      <button class="fm-drawer-item" id="fm-search-btn">
+        <span id="fmd-icon-search"></span><span>Recherche</span>
+      </button>
+      <button class="fm-drawer-item" id="fm-settings-btn">
+        <span id="fmd-icon-settings"></span><span>Réglages</span>
       </button>
     </div>
   </div>
@@ -926,6 +935,7 @@ document.addEventListener('DOMContentLoaded', () => {
     'fmd-icon-nutrition': 'nutrition', 'fmd-icon-contacts': 'contacts',
     'fmd-icon-pomodoro': 'pomodoro', 'fmd-icon-meteo': 'meteo',
     'fmd-icon-stockage': 'stockage', 'fmd-icon-stats': 'stats',
+    'fmd-icon-assistant': 'bot', 'fmd-icon-search': 'search', 'fmd-icon-settings': 'settings',
   };
   Object.entries(navIconMap).forEach(([id, icon]) => {
     const el = document.getElementById(id);
@@ -985,7 +995,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ── FM More Drawer (force-mobile) ── */
   (function initFmDrawer() {
-    const drawer  = document.getElementById('fm-drawer');
+    const drawer   = document.getElementById('fm-drawer');
     const backdrop = document.getElementById('fm-backdrop');
     const moreBtn  = document.getElementById('mnav-more-btn');
     if (!drawer) return;
@@ -993,6 +1003,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const close = () => drawer.classList.remove('open');
     moreBtn?.addEventListener('click', e => { e.stopPropagation(); open(); });
     backdrop?.addEventListener('click', close);
+
+    /* Navigation modules */
     drawer.querySelectorAll('.fm-drawer-item[data-fm-nav]').forEach(btn => {
       btn.addEventListener('click', () => {
         Router.navigate(btn.dataset.fmNav);
@@ -1000,11 +1012,98 @@ document.addEventListener('DOMContentLoaded', () => {
         close();
       });
     });
+
+    /* Assistant button */
+    document.getElementById('fm-assistant-btn')?.addEventListener('click', () => {
+      close();
+      if (typeof Assistant !== 'undefined') {
+        setTimeout(() => {
+          /* En force-mobile, déplace le panel dans #app avant d'ouvrir */
+          const panel = document.getElementById('assistant-panel');
+          const app   = document.getElementById('app');
+          if (panel && app && document.body.classList.contains('force-mobile')) {
+            if (panel.parentElement !== app) {
+              app.appendChild(panel);
+              panel.classList.add('phone-mode');
+            }
+            panel.style.display = '';
+          }
+          Assistant.toggle();
+        }, 150);
+      }
+    });
+
+    /* Recherche */
+    document.getElementById('fm-search-btn')?.addEventListener('click', () => {
+      close();
+      setTimeout(() => Modal.open('search-modal'), 150);
+    });
+
+    /* Paramètres */
+    document.getElementById('fm-settings-btn')?.addEventListener('click', () => {
+      close();
+      setTimeout(() => Modal.open('settings-modal'), 150);
+    });
+  })();
+
+  /* ── Notes phone mode : bascule liste ↔ éditeur ── */
+  (function initPhoneNotesToggle() {
+    /* Délégation : écoute les clics dans content-area */
+    document.getElementById('content-area')?.addEventListener('click', e => {
+      if (!document.body.classList.contains('force-mobile')) return;
+
+      /* Clic sur un note-item → afficher l'éditeur */
+      const noteItem = e.target.closest('.note-item');
+      if (noteItem && !e.target.closest('.note-delete') && !e.target.closest('.note-tag')) {
+        const layout = noteItem.closest('.notes-layout');
+        if (layout) {
+          layout.classList.add('fm-editing');
+          /* Insère le bouton retour comme SIBLING du editor-panel (résiste aux setInnerHTML) */
+          if (!layout.querySelector('#fm-notes-back')) {
+            const back = document.createElement('button');
+            back.id = 'fm-notes-back';
+            back.innerHTML = Icons.chevronLeft + ' Notes';
+            back.addEventListener('click', () => {
+              layout.classList.remove('fm-editing');
+            });
+            const editorPanel = document.getElementById('notes-editor-panel');
+            if (editorPanel) {
+              layout.insertBefore(back, editorPanel);
+            } else {
+              layout.appendChild(back);
+            }
+          }
+        }
+      }
+    });
+
+    /* Quand on quitte le module notes, reset l'état */
+    Bus.on('navigate', ({ prev }) => {
+      if (prev === 'notes') {
+        document.querySelector('.notes-layout')?.classList.remove('fm-editing');
+      }
+    });
   })();
 
   /* ── Bouton quitter mode téléphone (outside #app) ── */
   document.getElementById('phone-exit-btn')?.addEventListener('click', () => {
     document.getElementById('mobile-mode-btn')?.click();
+  });
+
+  /* ── Quand on sort de force-mobile : remettre l'assistant dans body ── */
+  document.getElementById('mobile-mode-btn')?.addEventListener('click', () => {
+    /* Déterminé APRÈS le toggle (listener ajouté avant celui de initPhoneMode) */
+    requestAnimationFrame(() => {
+      const isPhone = document.body.classList.contains('force-mobile');
+      if (!isPhone) {
+        const panel = document.getElementById('assistant-panel');
+        if (panel && panel.parentElement !== document.body) {
+          document.body.appendChild(panel);
+          panel.classList.remove('phone-mode');
+          if (typeof Assistant !== 'undefined' && Assistant.open) Assistant.hide();
+        }
+      }
+    });
   });
 
   /* Init assistant */
